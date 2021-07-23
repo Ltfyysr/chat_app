@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/common_widget/social_log_in_button.dart';
 
@@ -49,14 +50,21 @@ class SignInPage extends StatelessWidget {
                 size: 32,
               ),
             ),
-            /*SocialLoginButton(
-              onPressed: () {},
+            SocialLoginButton(
+              onPressed: _misafirGirisi,
               butonColor: Colors.teal,
-              butonText: "Misafir Giriş Yap", butonIcon: key,
-            ),*/
+              butonText: "Misafir Giriş Yap", butonIcon: Icon(Icons.supervised_user_circle,color: Colors.black12,size: 32,) 
+            ),
           ],
         ),
       ),
     );
   }
+
+  void _misafirGirisi() async{
+    UserCredential sonuc = await FirebaseAuth.instance.signInAnonymously();
+    print("oturum açan user id: "+sonuc.user!.uid.toString());
+  }
 }
+
+
