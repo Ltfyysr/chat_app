@@ -1,8 +1,17 @@
+import 'package:chat_app/services/auth_base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/common_widget/social_log_in_button.dart';
 
 class SignInPage extends StatelessWidget {
+final Function(User) onSignIn;
+final AuthBase authService;
+const SignInPage({required Key key, required this.authService, required this.onSignIn, Key}):super(key: key);
+void _misafirGirisi() async{
+  User _user =await authService.signInAnonymously();
+  onSignIn(_user);
+  print("oturum açan user id: "+_user.uid.toString());
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,11 +69,8 @@ class SignInPage extends StatelessWidget {
       ),
     );
   }
-
-  void _misafirGirisi() async{
-    UserCredential sonuc = await FirebaseAuth.instance.signInAnonymously();
-    print("oturum açan user id: "+sonuc.user!.uid.toString());
-  }
 }
+
+
 
 

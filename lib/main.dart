@@ -1,3 +1,5 @@
+import 'package:chat_app/landing_page.dart';
+import 'package:chat_app/services/firebase_auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/sign_in_page.dart';
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: SignInPage(),
+      home: LandingPage(authService: FirebaseAuthService(),),
     );
   }
 }
