@@ -1,14 +1,16 @@
 import 'package:chat_app/home_page.dart';
+import 'package:chat_app/locator.dart';
 import 'package:chat_app/services/auth_base.dart';
+import 'package:chat_app/services/firebase_auth_service.dart';
 import 'package:chat_app/sign_in_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'model/user_model.dart';
+import 'package:chat_app/model/user_model.dart';
 
 class LandingPage extends StatefulWidget {
-  final AuthBase authService;
-  const LandingPage({Key? key, required this.authService}) : super(key: key);
+
+ // const LandingPage({Key? key, required this.authService}) : super(key: key);
 
   @override
   _LandingPageState createState() => _LandingPageState();
@@ -16,9 +18,10 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   late User _user;
-
   get key => null;
+ AuthBase authService =locator<FirebaseAuthService>();
 
+  get uid => null;
 
 
   @override
@@ -30,20 +33,19 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    var user = this._user;
-    if (_user == null) {
+    if (uid == null) {
       return SignInPage(key: key, onSignIn: (User) {
         _updateUser(User);
-      }, authService: widget.authService,);
+      },);
     } else {
-      return HomePage( authService: widget.authService, user: _user , onSignOut: () {
-        _updateUser(null!) ;
+      return HomePage( authService:authService, user: uid , onSignOut: () {
+        _updateUser(uid) ;
       },);
     }
   }
 
   Future<void> _checkUser() async {
-    User? _user = await widget.authService.currentUser();
+    User? _user = (await authService.currentUser());
   }
 
   void _updateUser(User user) {

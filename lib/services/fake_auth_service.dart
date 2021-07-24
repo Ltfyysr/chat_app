@@ -2,7 +2,7 @@ import 'package:chat_app/services/auth_base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FakeAuthenticationService implements AuthBase{
-  String uid= "4444444444444";
+  String userID= "4444444444444";
   late User _user;
     @override
   Future<User> currentUser() async{
