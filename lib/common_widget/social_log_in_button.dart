@@ -18,7 +18,7 @@ class SocialLoginButton extends StatelessWidget {
         this.yukseklik: 40,
         required this.butonIcon,
         required this.onPressed})
-      : assert(butonText != null, onPressed != null),
+      : assert(butonText != (null), onPressed != (null)),
         super(key: key);
 
   @override
@@ -54,7 +54,7 @@ class SocialLoginButton extends StatelessWidget {
                 //Spreads, Collection-if(tek bir değer döndereceksek),collection-for
                 //burda sondaki butona icon olmaması durumunda ne yapacağımızı belirtiyoruz
                 //yeni yöntem buu(spreads yapısı)
-                if (butonIcon == null) ...[
+                if (butonIcon != (null)) ...[
                   //butonIcon bu ise(null değilse) böyle bir liste koy
                   butonIcon,
                   Text(
@@ -63,7 +63,7 @@ class SocialLoginButton extends StatelessWidget {
                   ),
                   Opacity(opacity: 0, child: butonIcon)
                 ],
-                if ( butonIcon == null) ...[
+                if ( butonIcon == (null)) ...[
                   //butonIcon null ise böyle bir liste koy
                   Container(),
                   Text(

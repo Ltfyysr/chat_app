@@ -3,14 +3,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/common_widget/social_log_in_button.dart';
 import 'package:provider/provider.dart';
+
 import 'model/user_model.dart';
 
 class SignInPage extends StatelessWidget {
-
+  MyUser? get user => null;
 void _misafirGirisi(BuildContext context) async{
-  final _userModel = Provider.of<UserModel>(context);
-  User _user =await _userModel.signInAnonymously();
-  print("oturum açan user id: "+_user.uid.toString());
+  final _userModel = Provider.of<UserModel>(context, listen: false);
+  MyUser? _user =await _userModel.signInAnonymously();
+  print("oturum açan user id: "+_user!.userID.toString());
+
+}
+void _googleIleGiris(BuildContext context) async{
+  final _userModel = Provider.of<UserModel>(context, listen: false);
+  MyUser? _user =await _userModel.signInWithGoogle();
+  print("oturum açan user id: "+_user!.userID.toString());
+
 }
   @override
   Widget build(BuildContext context) {
@@ -41,7 +49,7 @@ void _misafirGirisi(BuildContext context) async{
               textColor: Colors.black87,
               butonColor: Colors.white,
               butonIcon: Image.asset("images/google-logo.png"),
-              onPressed: () {},
+              onPressed: () => _googleIleGiris(context),
             ),
              SocialLoginButton(
                 butonText: "Facebook ile Giriş Yap",
@@ -69,6 +77,8 @@ void _misafirGirisi(BuildContext context) async{
       ),
     );
   }
+
+
 }
 
 

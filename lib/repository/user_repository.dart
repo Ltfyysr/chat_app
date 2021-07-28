@@ -1,4 +1,5 @@
 import 'package:chat_app/locator.dart';
+import 'package:chat_app/model/user_model.dart';
 import 'package:chat_app/services/auth_base.dart';
 import 'package:chat_app/services/fake_auth_service.dart';
 import 'package:chat_app/services/firebase_auth_service.dart';
@@ -11,19 +12,19 @@ class UserRepository implements AuthBase{
   FakeAuthenticationService _fakeAuthenticationService = locator<FakeAuthenticationService>();
 
   AppMode appMode=AppMode.DEBUG;
-
+  MyUser? get user => null;
   @override
-  Future<User> currentUser() async{
+  Future<MyUser?> getCurrentUser() async{
     if(appMode == AppMode.DEBUG){
-      return await _fakeAuthenticationService.currentUser();
+      return await _fakeAuthenticationService.getCurrentUser();
     }else{
-      return await _firebaseAuthService.currentUser();
+      return await _firebaseAuthService.getCurrentUser();
     }
 
   }
 
   @override
-  Future<User> signInAnonymously() async{
+  Future<MyUser?> signInAnonymously() async{
     if(appMode == AppMode.DEBUG){
       return await _fakeAuthenticationService.signInAnonymously();
     }else{
@@ -37,6 +38,15 @@ class UserRepository implements AuthBase{
       return await _fakeAuthenticationService.signOut();
     }else{
      return await  _firebaseAuthService.signOut();
+    }
+  }
+
+  @override
+  Future<MyUser?> signInWithGoogle()async {
+    if(appMode == AppMode.DEBUG){
+      return await _fakeAuthenticationService.signInWithGoogle();
+    }else{
+      return await  _firebaseAuthService.signInWithGoogle();
     }
   }
 
