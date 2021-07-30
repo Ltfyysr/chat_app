@@ -1,4 +1,3 @@
-import 'package:chat_app/home_page.dart';
 import 'package:chat_app/locator.dart';
 import 'package:chat_app/model/user_model.dart';
 import 'package:chat_app/repository/user_repository.dart';
@@ -78,7 +77,6 @@ class UserModel with ChangeNotifier implements AuthBase {
 
   @override
   Future<MyUser?> signInWithGoogle() async {
-   // late MyUser? _user;
     try {
       state = ViewState.Busy;
       _user = await _userRepository!.signInWithGoogle();
@@ -88,6 +86,24 @@ class UserModel with ChangeNotifier implements AuthBase {
         return null;
     } catch (e) {
       debugPrint("Viewmodeldeki sign in with google hata:" + e.toString());
+      return null;
+    } finally {
+      state = ViewState.Idle;
+    }
+  }
+
+  @override
+  Future<MyUser?> signInWithFacebook() async {
+
+    try {
+      state = ViewState.Busy;
+      _user = await _userRepository!.signInWithFacebook();
+      // if (_user != null)
+      return _user;
+      // else
+      return null;
+    } catch (e) {
+      debugPrint("Viewmodeldeki sign in with facebook hata:" + e.toString());
       return null;
     } finally {
       state = ViewState.Idle;
