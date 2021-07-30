@@ -1,3 +1,4 @@
+import 'package:chat_app/home_page.dart';
 import 'package:chat_app/locator.dart';
 import 'package:chat_app/model/user_model.dart';
 import 'package:chat_app/repository/user_repository.dart';
@@ -27,7 +28,7 @@ class UserModel with ChangeNotifier implements AuthBase {
 
   @override
   Future<MyUser?> getCurrentUser() async {
-    late MyUser? _user;
+   // late MyUser? _user;
 
     // await EasyLocalization.ensureInitialized();
     try {
@@ -47,7 +48,7 @@ class UserModel with ChangeNotifier implements AuthBase {
 
   @override
   Future<MyUser?> signInAnonymously() async {
-    late MyUser? _user;
+    //late MyUser? _user;
     try {
       state = ViewState.Busy;
       _user = await _userRepository!.signInAnonymously();
@@ -65,6 +66,7 @@ class UserModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       bool sonuc = await _userRepository!.signOut();
+      _user = null;
       return sonuc;
     } catch (e) {
       debugPrint("Viewmodeldeki sign out hata: " + e.toString());
@@ -76,13 +78,13 @@ class UserModel with ChangeNotifier implements AuthBase {
 
   @override
   Future<MyUser?> signInWithGoogle() async {
-    late MyUser? _user;
+   // late MyUser? _user;
     try {
       state = ViewState.Busy;
       _user = await _userRepository!.signInWithGoogle();
-      if (_user != null)
+     // if (_user != null)
         return _user;
-      else
+     // else
         return null;
     } catch (e) {
       debugPrint("Viewmodeldeki sign in with google hata:" + e.toString());

@@ -25,13 +25,13 @@ class _HomePageState extends State<HomePage> {
         ],
         title: Text("Ana Sayfa"),
       ),
-      body: Center(child: Text("Hoşgeldiniz ${user!.userID}"),),
+      body: Center(child: Text("Hoşgeldiniz"),),
     );
   }
 
   Future<bool> _cikisYap(BuildContext context) async {
 
-    final _userModel = Provider.of<UserModel>(context);
+    final _userModel = Provider.of<UserModel>(context, listen: false);
     bool sonuc=await _userModel.signOut();
     return sonuc;
   }

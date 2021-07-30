@@ -1,6 +1,6 @@
 
 class MyUser{
-final String? userID;
+final String userID;
 
 MyUser({required this.userID, required String email});
 
@@ -14,4 +14,4 @@ MyUser.fromMap(Map<String, dynamic> map)
 
 @override
 String toString() {
-  return 'User{userID: $userID,}';}}
+  return 'MyUser{userID: $userID,}';}}

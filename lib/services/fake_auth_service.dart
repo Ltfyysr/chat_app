@@ -3,7 +3,7 @@ import 'package:chat_app/services/auth_base.dart';
 
 class FakeAuthenticationService implements AuthBase{
   String userID= "4444444444444";
-  MyUser? get user => null;
+  //MyUser? get user => null;
 
     @override
   Future<MyUser>  getCurrentUser() async {
@@ -24,6 +24,6 @@ class FakeAuthenticationService implements AuthBase{
 
   @override
   Future<MyUser> signInWithGoogle() async {
-    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: userID, email: "fakeuser@fake.com"));
+    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "google_user_id_123455", email: "fakeuser@fake.com"));
   }
 }

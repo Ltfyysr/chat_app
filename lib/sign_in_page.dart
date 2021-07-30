@@ -1,3 +1,4 @@
+import 'package:chat_app/home_page.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/common_widget/social_log_in_button.dart';
@@ -17,14 +18,15 @@ class _SignInPageState extends State<SignInPage> {
   void _misafirGirisi(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
     MyUser? _user = await _userModel.signInAnonymously();
-    //print("oturum açan user id: " + _user!.userID.toString());
-    if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
+    print("oturum açan user id: " + _user!.userID.toString());
+    //if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
   }
 
   void _googleIleGiris(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
     MyUser? _user = await _userModel.signInWithGoogle();
-   // print("oturum açan user id: "+_user!.userID.toString());
+    //print("oturum açan user id: "+_user!.userID.toString());
+
     if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
   }
 
