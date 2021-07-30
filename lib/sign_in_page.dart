@@ -1,25 +1,33 @@
 import 'package:chat_app/viewmodel/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/common_widget/social_log_in_button.dart';
 import 'package:provider/provider.dart';
 
 import 'model/user_model.dart';
 
-class SignInPage extends StatelessWidget {
-  MyUser? get user => null;
-void _misafirGirisi(BuildContext context) async{
-  final _userModel = Provider.of<UserModel>(context, listen: false);
-  MyUser? _user =await _userModel.signInAnonymously();
-  print("oturum açan user id: "+_user!.userID.toString());
-
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
 }
-void _googleIleGiris(BuildContext context) async{
-  final _userModel = Provider.of<UserModel>(context, listen: false);
-  MyUser? _user =await _userModel.signInWithGoogle();
-  print("oturum açan user id: "+_user!.userID.toString());
 
-}
+//MyUser? get user => null;
+
+// String? get userID=> null;
+class _SignInPageState extends State<SignInPage> {
+  void _misafirGirisi(BuildContext context) async {
+    final _userModel = Provider.of<UserModel>(context, listen: false);
+    MyUser? _user = await _userModel.signInAnonymously();
+    //print("oturum açan user id: " + _user!.userID.toString());
+    if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
+  }
+
+  void _googleIleGiris(BuildContext context) async {
+    final _userModel = Provider.of<UserModel>(context, listen: false);
+    MyUser? _user = await _userModel.signInWithGoogle();
+   // print("oturum açan user id: "+_user!.userID.toString());
+    if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,13 +59,13 @@ void _googleIleGiris(BuildContext context) async{
               butonIcon: Image.asset("images/google-logo.png"),
               onPressed: () => _googleIleGiris(context),
             ),
-             SocialLoginButton(
-                butonText: "Facebook ile Giriş Yap",
-                onPressed: () {},
-                butonColor: Color(0xFF334D92),
-                butonIcon: Image.asset("images/facebook-logo.png"),
-              ),
-             SocialLoginButton(
+            SocialLoginButton(
+              butonText: "Facebook ile Giriş Yap",
+              onPressed: () {},
+              butonColor: Color(0xFF334D92),
+              butonIcon: Image.asset("images/facebook-logo.png"),
+            ),
+            SocialLoginButton(
               onPressed: () {},
               butonText: "Email ve Şifre ile Giriş Yap",
               butonColor: Color(0xFF7E57C2),
@@ -68,19 +76,17 @@ void _googleIleGiris(BuildContext context) async{
               ),
             ),
             SocialLoginButton(
-              onPressed: ()=>_misafirGirisi(context),
-              butonColor: Colors.teal,
-              butonText: "Misafir Giriş Yap", butonIcon: Icon(Icons.supervised_user_circle,color: Colors.black12,size: 32,) 
-            ),
+                onPressed: () => _misafirGirisi(context),
+                butonColor: Colors.teal,
+                butonText: "Misafir Giriş Yap",
+                butonIcon: Icon(
+                  Icons.supervised_user_circle,
+                  color: Colors.black12,
+                  size: 32,
+                )),
           ],
         ),
       ),
     );
   }
-
-
 }
-
-
-
-

@@ -1,16 +1,20 @@
+import 'package:chat_app/sign_in_page.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'model/user_model.dart';
 //sadece oturum açan kullanıcıların gördüğü sayfa
 
-class HomePage extends StatelessWidget {
-
+class HomePage extends StatefulWidget {
   final MyUser? user;
   HomePage({Key? key,required this.user}) : super(key: key);
 
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+class _HomePageState extends State<HomePage> {
+  MyUser? get user => null;
   @override
   Widget build(BuildContext context) {
 
@@ -21,7 +25,7 @@ class HomePage extends StatelessWidget {
         ],
         title: Text("Ana Sayfa"),
       ),
-      body: Center(child: Text("Hoşgeldiniz ${user?.userID}"),),
+      body: Center(child: Text("Hoşgeldiniz ${user!.userID}"),),
     );
   }
 

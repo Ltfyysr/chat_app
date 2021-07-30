@@ -2,7 +2,7 @@ import 'package:chat_app/model/user_model.dart';
 import 'package:chat_app/services/auth_base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:chat_app/model/user_model.dart';
+
 class FirebaseAuthService implements AuthBase {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   MyUser? get user => null;
@@ -21,7 +21,7 @@ class FirebaseAuthService implements AuthBase {
     if (user== null){
       return null;
   } else{
-  return MyUser(userID: user.uid);
+  return MyUser(userID: user.uid, email: 'fakeuser@fake.com');
   }
   }
 
@@ -57,7 +57,7 @@ class FirebaseAuthService implements AuthBase {
    if(_googleUser != null){
      GoogleSignInAuthentication _googleAuth = await _googleUser.authentication;
      if(_googleAuth.idToken != null && _googleAuth.accessToken != null){
-       UserCredential sonuc=await _firebaseAuth.signInWithCredential(GoogleAuthProvider.credential(idToken: null, accessToken: null));
+       UserCredential sonuc=await _firebaseAuth.signInWithCredential(GoogleAuthProvider.credential(idToken: _googleAuth.idToken, accessToken: _googleAuth.accessToken));
        User? _user = sonuc.user;
        return _userFromFirebase(_user);
      }else{

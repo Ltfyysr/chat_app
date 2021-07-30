@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'locator.dart';
 import 'package:easy_localization/easy_localization.dart';
-void main() async{
-  //EasyLocalization.ensureInitialized();
+
+Future<void> main() async{
+  //var ensureInitialized = EasyLocalization.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   setupLocator();
@@ -15,6 +16,7 @@ void main() async{
 }
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
 

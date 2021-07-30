@@ -2,7 +2,6 @@ import 'package:chat_app/locator.dart';
 import 'package:chat_app/model/user_model.dart';
 import 'package:chat_app/repository/user_repository.dart';
 import 'package:chat_app/services/auth_base.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 enum ViewState { Idle, Busy }
@@ -10,9 +9,9 @@ enum ViewState { Idle, Busy }
 class UserModel with ChangeNotifier implements AuthBase {
   ViewState _state = ViewState.Idle;
   UserRepository? _userRepository = locator<UserRepository>();
-  late MyUser? _user;
+  MyUser? _user;
 
-  MyUser? get user => null;
+  MyUser? get user => _user;
 
   ViewState get state => _state;
 
@@ -30,7 +29,7 @@ class UserModel with ChangeNotifier implements AuthBase {
   Future<MyUser?> getCurrentUser() async {
     late MyUser? _user;
 
-   // await EasyLocalization.ensureInitialized();
+    // await EasyLocalization.ensureInitialized();
     try {
       state = ViewState.Busy;
       _user = await _userRepository!.getCurrentUser();
@@ -63,11 +62,9 @@ class UserModel with ChangeNotifier implements AuthBase {
 
   @override
   Future<bool> signOut() async {
-    late MyUser? _user;
     try {
       state = ViewState.Busy;
       bool sonuc = await _userRepository!.signOut();
-       _user = null;
       return sonuc;
     } catch (e) {
       debugPrint("Viewmodeldeki sign out hata: " + e.toString());
@@ -78,15 +75,17 @@ class UserModel with ChangeNotifier implements AuthBase {
   }
 
   @override
-  Future<MyUser?> signInWithGoogle() async{
-
+  Future<MyUser?> signInWithGoogle() async {
+    late MyUser? _user;
     try {
-      late MyUser? _user;
       state = ViewState.Busy;
-      _user =await _userRepository!.signInWithGoogle();
-      return _user;
+      _user = await _userRepository!.signInWithGoogle();
+      if (_user != null)
+        return _user;
+      else
+        return null;
     } catch (e) {
-      debugPrint("Viewmodeldeki sign in with google hata: " + e.toString());
+      debugPrint("Viewmodeldeki sign in with google hata:" + e.toString());
       return null;
     } finally {
       state = ViewState.Idle;

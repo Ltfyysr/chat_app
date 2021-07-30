@@ -1,8 +1,8 @@
 
 class MyUser{
-final String userID;
+final String? userID;
 
-MyUser({required this.userID});
+MyUser({required this.userID, required String email});
 
 Map<String, dynamic> toMap() {
   return {
