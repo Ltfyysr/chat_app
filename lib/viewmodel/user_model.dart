@@ -27,9 +27,6 @@ class UserModel with ChangeNotifier implements AuthBase {
 
   @override
   Future<MyUser?> getCurrentUser() async {
-   // late MyUser? _user;
-
-    // await EasyLocalization.ensureInitialized();
     try {
       state = ViewState.Busy;
       _user = await _userRepository!.getCurrentUser();
@@ -47,7 +44,6 @@ class UserModel with ChangeNotifier implements AuthBase {
 
   @override
   Future<MyUser?> signInAnonymously() async {
-    //late MyUser? _user;
     try {
       state = ViewState.Busy;
       _user = await _userRepository!.signInAnonymously();
@@ -108,5 +104,17 @@ class UserModel with ChangeNotifier implements AuthBase {
     } finally {
       state = ViewState.Idle;
     }
+  }
+
+  @override
+  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre) {
+
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) {
+
+    throw UnimplementedError();
   }
 }

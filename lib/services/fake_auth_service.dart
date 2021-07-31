@@ -32,4 +32,16 @@ class FakeAuthenticationService implements AuthBase{
 
     return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "facebook_user_id_123455", email: "fakeuser@fake.com"));
   }
+
+  @override
+  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre) {
+
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) {
+
+    throw UnimplementedError();
+  }
 }

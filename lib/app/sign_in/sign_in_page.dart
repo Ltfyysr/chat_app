@@ -1,18 +1,16 @@
+import 'package:chat_app/app/sign_in/email_sifre_giris_ve_kayit.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/common_widget/social_log_in_button.dart';
 import 'package:provider/provider.dart';
 
-import 'model/user_model.dart';
+import '../../model/user_model.dart';
 
 class SignInPage extends StatefulWidget {
   @override
   _SignInPageState createState() => _SignInPageState();
 }
 
-//MyUser? get user => null;
-
-// String? get userID=> null;
 class _SignInPageState extends State<SignInPage> {
   void _misafirGirisi(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
@@ -24,10 +22,9 @@ class _SignInPageState extends State<SignInPage> {
   void _googleIleGiris(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
     MyUser? _user = await _userModel.signInWithGoogle();
-    //print("oturum açan user id: "+_user!.userID.toString());
-
-    if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
+        if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
   }
+
   void _facebookIleGiris(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
     MyUser? _user = await _userModel.signInWithFacebook();
@@ -35,6 +32,14 @@ class _SignInPageState extends State<SignInPage> {
 
     if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
   }
+
+  void _emailVeSifreIleGiris(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => EmailveSifreLoginPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +78,7 @@ class _SignInPageState extends State<SignInPage> {
               onPressed: () => _facebookIleGiris(context),
             ),
             SocialLoginButton(
-              onPressed: () {},
+              onPressed: () => _emailVeSifreIleGiris(context),
               butonText: "Email ve Şifre ile Giriş Yap",
               butonColor: Color(0xFF7E57C2),
               butonIcon: Icon(

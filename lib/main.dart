@@ -1,4 +1,4 @@
-import 'package:chat_app/landing_page.dart';
+import 'package:chat_app/app/landing_page.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

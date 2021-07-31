@@ -6,11 +6,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthService implements AuthBase {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-
-
-  // MyUser? get user => null;
-
   @override
   Future<MyUser?> getCurrentUser() async {
     try {
@@ -100,5 +95,17 @@ class FirebaseAuthService implements AuthBase {
         break;
     }
     return null;
+  }
+
+  @override
+  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre) {
+
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) {
+
+    throw UnimplementedError();
   }
 }
