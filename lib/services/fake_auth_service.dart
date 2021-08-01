@@ -34,14 +34,14 @@ class FakeAuthenticationService implements AuthBase{
   }
 
   @override
-  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre) {
+  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre)  async{
 
-    throw UnimplementedError();
+    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "created_user_id_123455", email: email));
   }
 
   @override
-  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) {
+  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) async{
 
-    throw UnimplementedError();
+    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "sign_in_user_id_123455", email: email));
   }
 }

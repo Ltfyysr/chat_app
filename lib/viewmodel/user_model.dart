@@ -10,11 +10,12 @@ class UserModel with ChangeNotifier implements AuthBase {
   ViewState _state = ViewState.Idle;
   UserRepository? _userRepository = locator<UserRepository>();
   MyUser? _user;
+  String? emailHataMesaji;
+  String? sifreHataMesaji;
 
   MyUser? get user => _user;
 
   ViewState get state => _state;
-
 
   set state(ViewState value) {
     _state = value;
@@ -76,10 +77,10 @@ class UserModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       _user = await _userRepository!.signInWithGoogle();
-     // if (_user != null)
-        return _user;
-     // else
-        return null;
+      // if (_user != null)
+      return _user;
+      // else
+      return null;
     } catch (e) {
       debugPrint("Viewmodeldeki sign in with google hata:" + e.toString());
       return null;
@@ -90,7 +91,6 @@ class UserModel with ChangeNotifier implements AuthBase {
 
   @override
   Future<MyUser?> signInWithFacebook() async {
-
     try {
       state = ViewState.Busy;
       _user = await _userRepository!.signInWithFacebook();
@@ -107,14 +107,55 @@ class UserModel with ChangeNotifier implements AuthBase {
   }
 
   @override
-  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre) {
-
-    throw UnimplementedError();
+  Future<MyUser?> createUserWithEmailandPassword(
+      String email, String sifre) async {
+    try {
+      if (_emailSifreKontrol(email, sifre)) {
+        state = ViewState.Busy;
+        _user =
+            await _userRepository!.createUserWithEmailandPassword(email, sifre);
+        return _user;
+      } else
+        return null;
+    } catch (e) {
+      debugPrint("Viewmodeldeki create user with email and password hata: " +
+          e.toString());
+      return null;
+    } finally {
+      state = ViewState.Idle;
+    }
   }
 
   @override
-  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) {
+  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) async {
+    try {
+      if (_emailSifreKontrol(email, sifre)) {
+        state = ViewState.Busy;
+        _user = await _userRepository!.signInWithEmailandPassword(email, sifre);
+        return _user;
+      } else
+        return null;
+    } catch (e) {
+      debugPrint("Viewmodeldeki sign in with email and password hata: " +
+          e.toString());
+      return null;
+    } finally {
+      state = ViewState.Idle;
+    }
+  }
 
-    throw UnimplementedError();
+  bool _emailSifreKontrol(String email, String sifre) {
+    var sonuc = true;
+    if (sifre.length < 6) {
+      sifreHataMesaji = "En az 6 karakter olmalı";
+      sonuc = false;
+    } else
+      sifreHataMesaji = null;
+    if (!email.contains('@')) {
+      emailHataMesaji = "Geçersiz email adresi";
+      sonuc = false;
+    } else
+      emailHataMesaji = null;
+    return sonuc;
   }
 }

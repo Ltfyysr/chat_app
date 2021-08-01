@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthService implements AuthBase {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   @override
   Future<MyUser?> getCurrentUser() async {
     try {
@@ -80,9 +81,10 @@ class FirebaseAuthService implements AuthBase {
     ]);
     switch (_faceResult.status) {
       case FacebookLoginStatus.success:
-        if (_faceResult.accessToken != null){
-          UserCredential _firebaseResult = (await _firebaseAuth.signInWithCredential(
-              FacebookAuthProvider.credential(_faceResult.accessToken!.token)));
+        if (_faceResult.accessToken != null) {
+          UserCredential _firebaseResult = (await _firebaseAuth
+              .signInWithCredential(FacebookAuthProvider.credential(
+                  _faceResult.accessToken!.token)));
           User? _user = _firebaseResult.user;
           return _userFromFirebase(_user);
         }
@@ -98,14 +100,26 @@ class FirebaseAuthService implements AuthBase {
   }
 
   @override
-  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre) {
-
-    throw UnimplementedError();
+  Future<MyUser?> createUserWithEmailandPassword(
+      String email, String sifre) async {
+    try {
+      UserCredential sonuc = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: sifre);
+      return _userFromFirebase(sonuc.user);
+    } catch (e) {
+      print("Create User With Email and Password hata : " + e.toString());
+      return null;
+    }
   }
 
   @override
-  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) {
-
-    throw UnimplementedError();
+  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) async {
+    try {
+      UserCredential sonuc = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: sifre);
+      return _userFromFirebase(sonuc.user);
+    } catch (e) {
+      print("Sign In With Email and Password hata : " + e.toString());
+      return null;
+    }
   }
 }

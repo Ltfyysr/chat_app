@@ -19,15 +19,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
-      title: "ChatApp",
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
-      home: ChangeNotifierProvider(
-          create: (context)=> UserModel(),
-          child: LandingPage()),
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => UserModel(),
+      child: MaterialApp(
+        title: "ChatApp",
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+        ),
+        home: LandingPage()),
     );
   }
 }

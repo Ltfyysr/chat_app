@@ -10,7 +10,7 @@ class UserRepository implements AuthBase{
   FirebaseAuthService _firebaseAuthService = locator<FirebaseAuthService>();
   FakeAuthenticationService _fakeAuthenticationService = locator<FakeAuthenticationService>();
 
-  AppMode appMode=AppMode.RELEASE;
+  AppMode appMode=AppMode.DEBUG;
   MyUser? get user => null;
   @override
   Future<MyUser?> getCurrentUser() async{
@@ -60,15 +60,22 @@ class UserRepository implements AuthBase{
   }
 
   @override
-  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre) {
-
-    throw UnimplementedError();
+  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre) async {
+    if(appMode == AppMode.DEBUG){
+      return await _fakeAuthenticationService.createUserWithEmailandPassword(email, sifre);
+    }else{
+      return await  _firebaseAuthService.createUserWithEmailandPassword(email, sifre);
+    }
   }
 
   @override
-  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) {
+  Future<MyUser?> signInWithEmailandPassword(String email, String sifre) async{
 
-    throw UnimplementedError();
+    if(appMode == AppMode.DEBUG){
+      return await _fakeAuthenticationService.signInWithEmailandPassword(email, sifre);
+    }else{
+      return await  _firebaseAuthService.signInWithEmailandPassword(email, sifre);
+    }
   }
 
 }
