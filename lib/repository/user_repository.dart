@@ -3,14 +3,15 @@ import 'package:chat_app/model/user_model.dart';
 import 'package:chat_app/services/auth_base.dart';
 import 'package:chat_app/services/fake_auth_service.dart';
 import 'package:chat_app/services/firebase_auth_service.dart';
+import 'package:chat_app/services/firestore_db_service.dart';
 
 enum AppMode{DEBUG, RELEASE}
 
 class UserRepository implements AuthBase{
   FirebaseAuthService _firebaseAuthService = locator<FirebaseAuthService>();
   FakeAuthenticationService _fakeAuthenticationService = locator<FakeAuthenticationService>();
-
-  AppMode appMode=AppMode.DEBUG;
+  FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
+  AppMode appMode=AppMode.RELEASE;
   MyUser? get user => null;
   @override
   Future<MyUser?> getCurrentUser() async{
@@ -45,7 +46,11 @@ class UserRepository implements AuthBase{
     if(appMode == AppMode.DEBUG){
       return await _fakeAuthenticationService.signInWithGoogle();
     }else{
-      return await  _firebaseAuthService.signInWithGoogle();
+      MyUser? _user = await  _firebaseAuthService.signInWithGoogle();
+      bool _sonuc =await _firestoreDBService.saveUser(_user!);
+      if(_sonuc){
+        return _user;
+      }else return null;
     }
   }
 
@@ -55,7 +60,11 @@ class UserRepository implements AuthBase{
     if(appMode == AppMode.DEBUG){
       return await _fakeAuthenticationService.signInWithFacebook();
     }else{
-      return await  _firebaseAuthService.signInWithFacebook();
+      MyUser? _user = await  _firebaseAuthService.signInWithFacebook();
+      bool _sonuc =await _firestoreDBService.saveUser(_user!);
+      if(_sonuc){
+        return _user;
+      }else return null;
     }
   }
 
@@ -64,7 +73,11 @@ class UserRepository implements AuthBase{
     if(appMode == AppMode.DEBUG){
       return await _fakeAuthenticationService.createUserWithEmailandPassword(email, sifre);
     }else{
-      return await  _firebaseAuthService.createUserWithEmailandPassword(email, sifre);
+      MyUser? _user = await  _firebaseAuthService.createUserWithEmailandPassword(email, sifre);
+      bool? _sonuc =await _firestoreDBService.saveUser(_user!);
+      if(_sonuc){
+        return _user;
+      }else return null;
     }
   }
 

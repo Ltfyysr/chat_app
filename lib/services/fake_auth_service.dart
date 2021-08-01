@@ -7,12 +7,12 @@ class FakeAuthenticationService implements AuthBase{
 
     @override
   Future<MyUser>  getCurrentUser() async {
-      return await Future.value(MyUser(userID: userID, email: 'fakeuser@fake.com'));
+      return await Future.value(MyUser(userID: userID, email: 'fakeuser@fake.com',));
     }
 
   @override
   Future<MyUser> signInAnonymously() async {
-    return await Future.delayed(Duration(seconds:2 ), ()=> MyUser(userID: userID, email: 'fakeuser@fake.com'));
+    return await Future.delayed(Duration(seconds:2 ), ()=> MyUser(userID: userID, email: 'fakeuser@fake.com',));
 
   }
 
@@ -24,24 +24,24 @@ class FakeAuthenticationService implements AuthBase{
 
   @override
   Future<MyUser> signInWithGoogle() async {
-    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "google_user_id_123455", email: "fakeuser@fake.com"));
+    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "google_user_id_123455", email: "fakeuser@fake.com", ));
   }
 
   @override
   Future<MyUser?> signInWithFacebook() async{
 
-    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "facebook_user_id_123455", email: "fakeuser@fake.com"));
+    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "facebook_user_id_123455", email: "fakeuser@fake.com", ));
   }
 
   @override
   Future<MyUser?> createUserWithEmailandPassword(String email, String sifre)  async{
 
-    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "created_user_id_123455", email: email));
+    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "created_user_id_123455", email: "fakeuser@fake.com", ));
   }
 
   @override
   Future<MyUser?> signInWithEmailandPassword(String email, String sifre) async{
 
-    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "sign_in_user_id_123455", email: email));
+    return await Future.delayed(Duration(seconds: 2), () => MyUser(userID: "sign_in_user_id_123455", email: "fakeuser@fake.com", ));
   }
 }

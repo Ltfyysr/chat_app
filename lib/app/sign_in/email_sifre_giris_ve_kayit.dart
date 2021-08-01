@@ -14,7 +14,6 @@ class EmailveSifreLoginPage extends StatefulWidget {
 }
 
 class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
-  @override
   late String? _email, _sifre;
   late String _butonText, _linkText;
   var _formType = FormType.Login;
