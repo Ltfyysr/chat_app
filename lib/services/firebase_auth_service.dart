@@ -111,12 +111,7 @@ class FirebaseAuthService implements AuthBase {
 
   @override
   Future<MyUser?> signInWithEmailandPassword(String email, String sifre) async {
-   // try{
     UserCredential sonuc = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: sifre);
       return _userFromFirebase(sonuc.user);
-    /*} catch (e) {
-      print("Sign In With Email and Password hata : " + e.toString());
-      return null;
-    }*/
   }
 }
