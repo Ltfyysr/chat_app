@@ -1,4 +1,4 @@
-import 'package:chat_app/model/user_model.dart';
+import 'package:chat_app/model/user.dart';
 import 'package:chat_app/services/auth_base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
@@ -104,14 +104,9 @@ class FirebaseAuthService implements AuthBase {
   @override
   Future<MyUser?> createUserWithEmailandPassword(
       String email, String sifre) async {
-   // try {
       UserCredential sonuc = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: sifre);
       return _userFromFirebase(sonuc.user);
-   /* } catch (e) {
-      print("Create User With Email and Password hata : " + e.toString());
-      return null;
-    }*/
   }
 
   @override

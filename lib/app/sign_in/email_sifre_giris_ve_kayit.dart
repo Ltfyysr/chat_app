@@ -1,7 +1,11 @@
+import 'package:chat_app/app/hata_exception.dart';
+import 'package:chat_app/common_widget/platform_duyarli_alert_dialog.dart';
 import 'package:chat_app/common_widget/social_log_in_button.dart';
-import 'package:chat_app/model/user_model.dart';
+import 'package:chat_app/model/user.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 enum FormType { Register, Login }
@@ -25,15 +29,33 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
     final _userModel = Provider.of<UserModel>(context,
         listen: false); //usermodel a erişmek için yaptık
     if (_formType == FormType.Login) {
-      MyUser? _girisYapanUser =
-          await _userModel.signInWithEmailandPassword(_email!, _sifre!);
-      if (_girisYapanUser != null)
-        print("Oturum açan user id:" + _girisYapanUser.userID.toString());
+      try {
+        MyUser? _girisYapanUser =
+            await _userModel.signInWithEmailandPassword(_email!, _sifre!);
+        if (_girisYapanUser != null)
+          print("Oturum açan user id:" + _girisYapanUser.userID.toString());
+      } on FirebaseAuthException catch (e) {
+        print("hata ${e.code}");
+        PlatformDuyarliAlertDialog(
+          baslik: "Oturum Açma HATA",
+          icerik: Hatalar.goster(e.code),
+          anaButonYazisi: 'Tamam',
+        ).goster(context);
+      }
     } else {
-      MyUser? _olusturulanUser =
-          await _userModel.createUserWithEmailandPassword(_email!, _sifre!);
-      if (_olusturulanUser != null)
-        print("Oturum açan user id:" + _olusturulanUser.userID.toString());
+      try {
+        MyUser? _olusturulanUser =
+            await _userModel.createUserWithEmailandPassword(_email!, _sifre!);
+       if (_olusturulanUser != null)
+         print("Oturum açan user id:" + _olusturulanUser.userID.toString());
+      } on FirebaseAuthException catch (e) {
+        print("hata ${e.code}");
+        PlatformDuyarliAlertDialog(
+          baslik: "Kullanıcı Oluşturma HATA",
+          icerik: Hatalar.goster(e.code),
+          anaButonYazisi: 'Tamam',
+        ).goster(context);
+      }
     }
   }
 
@@ -52,10 +74,9 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
 
     final _userModel = Provider.of<UserModel>(context, listen: true);
     if (_userModel.user != null) {
-      Future.delayed(Duration(milliseconds: 10),(){
+      Future.delayed(Duration(milliseconds: 10), () {
         Navigator.of(context).pop();
       });
-
     }
 
     return Scaffold(
@@ -73,7 +94,9 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                       TextFormField(
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          errorText: _userModel.emailHataMesaji != null ? _userModel.emailHataMesaji : null,
+                          errorText: _userModel.emailHataMesaji != null
+                              ? _userModel.emailHataMesaji
+                              : null,
                           prefixIcon: Icon(Icons.mail),
                           hintText: 'Email',
                           labelText: 'Email',
@@ -89,7 +112,9 @@ class _EmailveSifreLoginPageState extends State<EmailveSifreLoginPage> {
                       TextFormField(
                         obscureText: true,
                         decoration: InputDecoration(
-                          errorText: _userModel.sifreHataMesaji != null ? _userModel.sifreHataMesaji : null,
+                          errorText: _userModel.sifreHataMesaji != null
+                              ? _userModel.sifreHataMesaji
+                              : null,
                           prefixIcon: Icon(Icons.visibility_off_rounded),
                           hintText: 'Şifre',
                           labelText: 'Şifre',

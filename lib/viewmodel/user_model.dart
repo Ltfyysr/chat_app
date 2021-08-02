@@ -1,5 +1,5 @@
 import 'package:chat_app/locator.dart';
-import 'package:chat_app/model/user_model.dart';
+import 'package:chat_app/model/user.dart';
 import 'package:chat_app/repository/user_repository.dart';
 import 'package:chat_app/services/auth_base.dart';
 import 'package:flutter/material.dart';
@@ -77,10 +77,7 @@ class UserModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       _user = await _userRepository!.signInWithGoogle();
-      // if (_user != null)
       return _user;
-      // else
-      return null;
     } catch (e) {
       debugPrint("Viewmodeldeki sign in with google hata:" + e.toString());
       return null;
@@ -94,10 +91,7 @@ class UserModel with ChangeNotifier implements AuthBase {
     try {
       state = ViewState.Busy;
       _user = await _userRepository!.signInWithFacebook();
-      // if (_user != null)
       return _user;
-      // else
-      return null;
     } catch (e) {
       debugPrint("Viewmodeldeki sign in with facebook hata:" + e.toString());
       return null;
@@ -107,23 +101,18 @@ class UserModel with ChangeNotifier implements AuthBase {
   }
 
   @override
-  Future<MyUser?> createUserWithEmailandPassword(
-      String email, String sifre) async {
-    try {
-      if (_emailSifreKontrol(email, sifre)) {
+  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre) async {
+    if (_emailSifreKontrol(email, sifre)) {
+      try {
         state = ViewState.Busy;
-        _user =
-            await _userRepository!.createUserWithEmailandPassword(email, sifre);
+        _user = await _userRepository!.createUserWithEmailandPassword(email, sifre);
+
         return _user;
-      } else
-        return null;
-    } catch (e) {
-      debugPrint("Viewmodeldeki create user with email and password hata: " +
-          e.toString());
+      } finally {
+        state = ViewState.Idle;
+      }
+    } else
       return null;
-    } finally {
-      state = ViewState.Idle;
-    }
   }
 
   @override

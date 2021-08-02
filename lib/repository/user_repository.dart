@@ -1,9 +1,10 @@
 import 'package:chat_app/locator.dart';
-import 'package:chat_app/model/user_model.dart';
+import 'package:chat_app/model/user.dart';
 import 'package:chat_app/services/auth_base.dart';
 import 'package:chat_app/services/fake_auth_service.dart';
 import 'package:chat_app/services/firebase_auth_service.dart';
 import 'package:chat_app/services/firestore_db_service.dart';
+import 'package:flutter/cupertino.dart';
 
 enum AppMode{DEBUG, RELEASE}
 
@@ -49,7 +50,7 @@ class UserRepository implements AuthBase{
       MyUser? _user = await  _firebaseAuthService.signInWithGoogle();
       bool _sonuc =await _firestoreDBService.saveUser(_user!);
       if(_sonuc){
-        return _user;
+        return await _firestoreDBService.readUser(_user.userID);
       }else return null;
     }
   }
@@ -63,7 +64,7 @@ class UserRepository implements AuthBase{
       MyUser? _user = await  _firebaseAuthService.signInWithFacebook();
       bool _sonuc =await _firestoreDBService.saveUser(_user!);
       if(_sonuc){
-        return _user;
+        return await _firestoreDBService.readUser(_user.userID);
       }else return null;
     }
   }
@@ -73,11 +74,11 @@ class UserRepository implements AuthBase{
     if(appMode == AppMode.DEBUG){
       return await _fakeAuthenticationService.createUserWithEmailandPassword(email, sifre);
     }else{
-      MyUser? _user = await  _firebaseAuthService.createUserWithEmailandPassword(email, sifre);
-      bool? _sonuc =await _firestoreDBService.saveUser(_user!);
-      if(_sonuc){
-        return _user;
-      }else return null;
+        MyUser? _user = await  _firebaseAuthService.createUserWithEmailandPassword(email, sifre);
+        bool? _sonuc =await _firestoreDBService.saveUser(_user!);
+        if(_sonuc){
+          return await _firestoreDBService.readUser(_user.userID);
+        }else return null;
     }
   }
 
@@ -87,7 +88,12 @@ class UserRepository implements AuthBase{
     if(appMode == AppMode.DEBUG){
       return await _fakeAuthenticationService.signInWithEmailandPassword(email, sifre);
     }else{
-      return await  _firebaseAuthService.signInWithEmailandPassword(email, sifre);
+      try{
+        MyUser? _user =  await  _firebaseAuthService.signInWithEmailandPassword(email, sifre);
+        return await _firestoreDBService.readUser(_user!.userID);
+      }catch(e){
+        debugPrint("repoda sign in user da hata var :"+e.toString());
+      }
     }
   }
 

@@ -1,4 +1,4 @@
-import 'package:chat_app/model/user_model.dart';
+import 'package:chat_app/model/user.dart';
 abstract class AuthBase{
   Future<MyUser?> getCurrentUser();
   Future<MyUser?> signInAnonymously();

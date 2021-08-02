@@ -1,8 +1,5 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 class MyUser {
   final String userID;
    String? email;
@@ -40,8 +37,6 @@ class MyUser {
   String toString() {
     return 'MyUser{userID: $userID, email: $email, userName: $userName, profilURL: $profilURL, createdAt: $createdAt, updatedAt: $updatedAt, seviye: $seviye}';
   }
-
-
 
   String randomSayiUret() {
     int rastgeleSayi = Random().nextInt(999999);

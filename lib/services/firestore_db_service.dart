@@ -1,4 +1,4 @@
-import 'package:chat_app/model/user_model.dart';
+import 'package:chat_app/model/user.dart';
 import 'package:chat_app/services/database_base.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreDBService implements DBBase {
@@ -16,4 +16,15 @@ class FirestoreDBService implements DBBase {
     } else {
       return true;
     }
-}}
+}
+
+  @override
+  Future<MyUser?> readUser(String userID) async {
+    DocumentSnapshot _okunanUser = await _firebaseDB.collection("users").doc(userID).get();
+    Map<String, dynamic>? _okunanUserBilgileriMap = _okunanUser.data() as Map<String, dynamic>?;
+
+    MyUser _okunanUserNesnesi = MyUser.fromMap(_okunanUserBilgileriMap!);
+    print("Okunan user nesnesi :" +_okunanUserNesnesi.toString());
+    return _okunanUserNesnesi;
+  }
+}

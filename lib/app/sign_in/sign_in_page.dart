@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:chat_app/common_widget/social_log_in_button.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/user_model.dart';
+import '../../model/user.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -12,17 +12,17 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  void _misafirGirisi(BuildContext context) async {
+  /* void _misafirGirisi(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
     MyUser? _user = await _userModel.signInAnonymously();
     print("oturum açan user id: " + _user!.userID.toString());
     //if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
   }
-
+*/
   void _googleIleGiris(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
     MyUser? _user = await _userModel.signInWithGoogle();
-        if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
+    if (_user != null) print("Oturum açan user id:" + _user.userID.toString());
   }
 
   void _facebookIleGiris(BuildContext context) async {
@@ -34,10 +34,8 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void _emailVeSifreIleGiris(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (context) => EmailveSifreLoginPage()));
+    Navigator.of(context).push(MaterialPageRoute(
+        fullscreenDialog: true, builder: (context) => EmailveSifreLoginPage()));
   }
 
   @override
@@ -87,7 +85,7 @@ class _SignInPageState extends State<SignInPage> {
                 size: 32,
               ),
             ),
-            SocialLoginButton(
+            /* SocialLoginButton(
                 onPressed: () => _misafirGirisi(context),
                 butonColor: Colors.teal,
                 butonText: "Misafir Giriş Yap",
@@ -95,7 +93,7 @@ class _SignInPageState extends State<SignInPage> {
                   Icons.supervised_user_circle,
                   color: Colors.black12,
                   size: 32,
-                )),
+                )),*/
           ],
         ),
       ),

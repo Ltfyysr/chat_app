@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'locator.dart';
 
 Future<void> main() async{
-  //var ensureInitialized = EasyLocalization.ensureInitialized();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   setupLocator();
