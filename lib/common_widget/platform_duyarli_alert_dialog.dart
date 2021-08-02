@@ -70,7 +70,7 @@ class PlatformDuyarliAlertDialog extends PlatformDuyarliWidget {
     } else { //android için
       if (iptalButonYazisi != null) {
         tumButonlar.add(
-          FlatButton(
+          TextButton(
             child: Text(iptalButonYazisi!),
             onPressed: () {
               Navigator.of(context).pop(false);
@@ -80,7 +80,7 @@ class PlatformDuyarliAlertDialog extends PlatformDuyarliWidget {
       }
 
       tumButonlar.add(
-        FlatButton(
+        TextButton(
           child: Text("Tamam"),
           onPressed: () {
             Navigator.of(context).pop(true);

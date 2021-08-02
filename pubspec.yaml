@@ -37,6 +37,7 @@ dependencies:
   easy_localization: ^3.0.0
   cloud_firestore: ^2.4.0
   map: ^1.0.0
+  image_picker: ^0.8.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

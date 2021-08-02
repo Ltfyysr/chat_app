@@ -4,7 +4,6 @@ import 'package:chat_app/services/auth_base.dart';
 import 'package:chat_app/services/fake_auth_service.dart';
 import 'package:chat_app/services/firebase_auth_service.dart';
 import 'package:chat_app/services/firestore_db_service.dart';
-import 'package:flutter/cupertino.dart';
 
 enum AppMode { DEBUG, RELEASE }
 

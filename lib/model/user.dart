@@ -4,7 +4,7 @@ class MyUser {
   final String userID;
    String? email;
    String? userName;
-   String? profilURL;
+   String ? profilURL;
    DateTime? createdAt;
    DateTime? updatedAt;
    int? seviye;

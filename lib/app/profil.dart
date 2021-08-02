@@ -1,18 +1,25 @@
+import 'dart:io';
+
 import 'package:chat_app/common_widget/platform_duyarli_alert_dialog.dart';
 import 'package:chat_app/common_widget/social_log_in_button.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfilPage extends StatefulWidget {
+  const ProfilPage({Key? key}) : super(key: key);
+
   @override
   _ProfilPageState createState() => _ProfilPageState();
 }
 
 class _ProfilPageState extends State<ProfilPage> {
-  late TextEditingController _controllerUserName;
+   late TextEditingController _controllerUserName;
 
-  // late File _profilFoto;
+   File? _profilFoto;
+
+  //final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -26,8 +33,26 @@ class _ProfilPageState extends State<ProfilPage> {
     _controllerUserName.dispose();
     super.dispose();
   }
+   void _kameradanFotoCek() async {
+     var _yeniResim = await ImagePicker.platform.pickImage(source: ImageSource.camera);
 
-  @override
+     setState(() {
+       _profilFoto = File(_yeniResim!.path);
+       Navigator.of(context).pop();
+     });
+   }
+
+   void _galeridenResimSec() async {
+     var _yeniResim = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+
+     setState(() {
+       _profilFoto = File(_yeniResim!.path);
+       Navigator.of(context).pop();
+     });
+   }
+
+
+   @override
   Widget build(BuildContext context) {
     UserModel _userModel = Provider.of<UserModel>(context);
     _controllerUserName.text = _userModel.user!.userName!;
@@ -36,7 +61,7 @@ class _ProfilPageState extends State<ProfilPage> {
       appBar: AppBar(
         title: Text("Profil"),
         actions: [
-          FlatButton(
+          TextButton(
             onPressed: () => _cikisIcinOnayIste(context),
             child: Text(
               "Çıkış",
@@ -51,13 +76,45 @@ class _ProfilPageState extends State<ProfilPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  radius: 70,
-                  backgroundColor: Colors.white,
-                  backgroundImage:
-                      NetworkImage(_userModel.user!.profilURL.toString()),
+                child: GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            height: 160,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Icon(Icons.camera),
+                                  title: Text("Kameradan Çek"),
+                                  onTap: () {
+                                    _kameradanFotoCek();
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.image),
+                                  title: Text("Galeriden Seç"),
+                                  onTap: () {
+                                    _galeridenResimSec();
+                                  },
+                                )
+                              ],
+                            ),
+                          );
+                        });
+                  },
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundColor: Colors.white,
+                    backgroundImage: _profilFoto == null
+                        ? NetworkImage(
+                      _userModel.user!.profilURL.toString(),
+                    )
+                        : FileImage(_profilFoto!) as ImageProvider,
+                  ),
+                  ),
                 ),
-              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -132,7 +189,7 @@ class _ProfilPageState extends State<ProfilPage> {
           anaButonYazisi: 'Tamam',
         ).goster(context);
       } else {
-        _controllerUserName.text =_userModel.user!.userName!;
+        _controllerUserName.text = _userModel.user!.userName!;
         PlatformDuyarliAlertDialog(
           baslik: "Hata",
           icerik: "UserName zaten kullanımda, farklı bir UserName deneyiniz!",
