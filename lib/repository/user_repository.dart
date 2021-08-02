@@ -11,7 +11,7 @@ enum AppMode { DEBUG, RELEASE }
 class UserRepository implements AuthBase {
   FirebaseAuthService _firebaseAuthService = locator<FirebaseAuthService>();
   FakeAuthenticationService _fakeAuthenticationService =
-      locator<FakeAuthenticationService>();
+  locator<FakeAuthenticationService>();
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
   AppMode appMode = AppMode.RELEASE;
 
@@ -23,7 +23,7 @@ class UserRepository implements AuthBase {
       return await _fakeAuthenticationService.getCurrentUser();
     } else {
       MyUser? _user = await _firebaseAuthService.getCurrentUser();
-     return  await _firestoreDBService.readUser(_user!.userID);
+      return await _firestoreDBService.readUser(_user!.userID);
     }
   }
 
@@ -74,8 +74,8 @@ class UserRepository implements AuthBase {
   }
 
   @override
-  Future<MyUser?> createUserWithEmailandPassword(
-      String email, String sifre) async {
+  Future<MyUser?> createUserWithEmailandPassword(String email,
+      String sifre) async {
     if (appMode == AppMode.DEBUG) {
       return await _fakeAuthenticationService.createUserWithEmailandPassword(
           email, sifre);
@@ -97,8 +97,16 @@ class UserRepository implements AuthBase {
           email, sifre);
     } else {
       MyUser? _user =
-          await _firebaseAuthService.signInWithEmailandPassword(email, sifre);
+      await _firebaseAuthService.signInWithEmailandPassword(email, sifre);
       return await _firestoreDBService.readUser(_user!.userID);
+    }
+  }
+
+  Future<bool?> updateUserName(String userID, String yeniUserName) async {
+    if (appMode == AppMode.DEBUG) {
+      return false;
+    } else {
+      return await _firestoreDBService.updateUserName(userID, yeniUserName);
     }
   }
 }
