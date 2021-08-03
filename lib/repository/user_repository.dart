@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:chat_app/locator.dart';
 import 'package:chat_app/model/user.dart';
 import 'package:chat_app/services/auth_base.dart';
 import 'package:chat_app/services/fake_auth_service.dart';
 import 'package:chat_app/services/firebase_auth_service.dart';
+import 'package:chat_app/services/firebase_storage_service.dart';
 import 'package:chat_app/services/firestore_db_service.dart';
 
 enum AppMode { DEBUG, RELEASE }
@@ -12,6 +15,8 @@ class UserRepository implements AuthBase {
   FakeAuthenticationService _fakeAuthenticationService =
   locator<FakeAuthenticationService>();
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
+  FirebaseStorageService _firebaseStorageService = locator<FirebaseStorageService>();
+
   AppMode appMode = AppMode.RELEASE;
 
   MyUser? get user => null;
@@ -107,5 +112,15 @@ class UserRepository implements AuthBase {
     } else {
       return await _firestoreDBService.updateUserName(userID, yeniUserName);
     }
+  }
+
+  Future<String?> uploadFile(String userID, String fileType, File? profilFoto)async {
+   if(appMode == AppMode.DEBUG){
+     return "Dosya indirme linki";
+   }else{
+     var profilFotoUrl = await _firebaseStorageService.uploadFile(userID, fileType, profilFoto!);
+     await _firestoreDBService.updateProfilFoto(userID,profilFotoUrl);
+          return profilFotoUrl ;
+   }
   }
 }

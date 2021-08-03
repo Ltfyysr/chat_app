@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat_app/locator.dart';
 import 'package:chat_app/model/user.dart';
 import 'package:chat_app/repository/user_repository.dart';
@@ -151,4 +153,9 @@ class UserModel with ChangeNotifier implements AuthBase {
     }
     return sonuc;
   }
+
+ Future<String?> uploadFile(String userID, String fileType, File? profilFoto) async {
+    var indirmeLinki = await _userRepository!.uploadFile(userID, fileType, profilFoto);
+    return indirmeLinki;
+ }
 }

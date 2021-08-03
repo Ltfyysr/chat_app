@@ -15,11 +15,9 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _ProfilPageState extends State<ProfilPage> {
-   late TextEditingController _controllerUserName;
+  late TextEditingController _controllerUserName;
 
-   File? _profilFoto;
-
-  //final ImagePicker _picker = ImagePicker();
+  File? _profilFoto;
 
   @override
   void initState() {
@@ -33,26 +31,28 @@ class _ProfilPageState extends State<ProfilPage> {
     _controllerUserName.dispose();
     super.dispose();
   }
-   void _kameradanFotoCek() async {
-     var _yeniResim = await ImagePicker.platform.pickImage(source: ImageSource.camera);
 
-     setState(() {
-       _profilFoto = File(_yeniResim!.path);
-       Navigator.of(context).pop();
-     });
-   }
+  void _kameradanFotoCek() async {
+    var _yeniResim =
+        await ImagePicker.platform.pickImage(source: ImageSource.camera);
 
-   void _galeridenResimSec() async {
-     var _yeniResim = await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _profilFoto = File(_yeniResim!.path);
+      Navigator.of(context).pop();
+    });
+  }
 
-     setState(() {
-       _profilFoto = File(_yeniResim!.path);
-       Navigator.of(context).pop();
-     });
-   }
+  void _galeridenResimSec() async {
+    var _yeniResim =
+        await ImagePicker.platform.pickImage(source: ImageSource.gallery);
 
+    setState(() {
+      _profilFoto = File(_yeniResim!.path);
+      Navigator.of(context).pop();
+    });
+  }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     UserModel _userModel = Provider.of<UserModel>(context);
     _controllerUserName.text = _userModel.user!.userName!;
@@ -109,12 +109,12 @@ class _ProfilPageState extends State<ProfilPage> {
                     backgroundColor: Colors.white,
                     backgroundImage: _profilFoto == null
                         ? NetworkImage(
-                      _userModel.user!.profilURL.toString(),
-                    )
+                            _userModel.user!.profilURL.toString(),
+                          )
                         : FileImage(_profilFoto!) as ImageProvider,
                   ),
-                  ),
                 ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -149,6 +149,7 @@ class _ProfilPageState extends State<ProfilPage> {
                     ),
                     onPressed: () {
                       _userNameGuncelle(context);
+                      _profilFotoGuncelle(context);
                     }),
               )
             ],
@@ -196,12 +197,15 @@ class _ProfilPageState extends State<ProfilPage> {
           anaButonYazisi: 'Tamam',
         ).goster(context);
       }
-    } else {
-      PlatformDuyarliAlertDialog(
-        baslik: "Hata",
-        icerik: "UserName değişikliği yapmadınız!",
-        anaButonYazisi: 'Tamam',
-      ).goster(context);
+    }
+  }
+
+  void _profilFotoGuncelle(BuildContext context) async {
+    final _userModel = Provider.of<UserModel>(context, listen: false);
+    if (_profilFoto != null) {
+      var url = await _userModel.uploadFile(
+          _userModel.user!.userID, "profil_foto", _profilFoto);
+      print("gelen url :" + url!);
     }
   }
 }
