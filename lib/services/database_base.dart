@@ -1,10 +1,10 @@
 import 'package:chat_app/model/user.dart';
 
 abstract class DBBase{
-
   Future<bool?> saveUser(MyUser user);
   Future<MyUser?> readUser(String userID);
   Future<bool?> updateUserName(String userID, String yeniUserName);
-
+  Future<bool?> updateProfilFoto(String userID, String profilFotoURL);
+  Future<List<MyUser>> getAllUser();
 
 }

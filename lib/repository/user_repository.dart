@@ -123,4 +123,12 @@ class UserRepository implements AuthBase {
           return profilFotoUrl ;
    }
   }
+  Future<List<MyUser>> getAllUser() async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      var tumKullaniciListesi= await _firestoreDBService.getAllUser();
+      return tumKullaniciListesi;
+    }
+  }
 }

@@ -31,7 +31,6 @@ class FirestoreDBService implements DBBase {
     print("Okunan user nesnesi :" + _okunanUserNesnesi.toString());
     return _okunanUserNesnesi;
   }
-
   @override
   Future<bool?> updateUserName(String userID, String yeniUserName) async {
     var users = await _firebaseDB
@@ -48,7 +47,6 @@ class FirestoreDBService implements DBBase {
       return true;
     }
   }
-
   @override
   Future<bool> updateProfilFoto(String userID, String profilFotoUrl) async {
     await _firebaseDB
@@ -57,4 +55,21 @@ class FirestoreDBService implements DBBase {
         .update({'profilURL': profilFotoUrl});
     return true;
   }
+  @override
+  Future<List<MyUser>> getAllUser() async {
+    QuerySnapshot? _querySnapshot = await FirebaseFirestore.instance.collection("users").get();
+
+    List<MyUser> tumKullanicilar = [];
+    for (DocumentSnapshot tekUser in _querySnapshot.docs) {
+      //print("okunan user :"+tekUser.data().toString());
+      MyUser _tekUser = MyUser.fromMap(tekUser.data() as Map<String, dynamic>);
+      tumKullanicilar.add(_tekUser);
+    }
+    //map metodu ile
+    //tumKullanicilar = _querySnapshot.docs.map((tekSatir) => MyUser.fromMap(tekSatir.data().toList();
+
+    return tumKullanicilar;
+  }
+
+
 }

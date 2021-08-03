@@ -103,11 +103,13 @@ class UserModel with ChangeNotifier implements AuthBase {
   }
 
   @override
-  Future<MyUser?> createUserWithEmailandPassword(String email, String sifre) async {
+  Future<MyUser?> createUserWithEmailandPassword(String email,
+      String sifre) async {
     if (_emailSifreKontrol(email, sifre)) {
       try {
         state = ViewState.Busy;
-        _user = await _userRepository!.createUserWithEmailandPassword(email, sifre);
+        _user =
+        await _userRepository!.createUserWithEmailandPassword(email, sifre);
 
         return _user;
       } finally {
@@ -146,16 +148,22 @@ class UserModel with ChangeNotifier implements AuthBase {
     return sonuc;
   }
 
-  Future<bool?> updateUserName(String userID, String yeniUserName) async{
+  Future<bool?> updateUserName(String userID, String yeniUserName) async {
     var sonuc = await _userRepository!.updateUserName(userID, yeniUserName);
-    if(sonuc == true) {
+    if (sonuc == true) {
       _user!.userName = yeniUserName;
     }
     return sonuc;
   }
 
- Future<String?> uploadFile(String userID, String fileType, File? profilFoto) async {
-    var indirmeLinki = await _userRepository!.uploadFile(userID, fileType, profilFoto);
+  Future<String?> uploadFile(String userID, String fileType,
+      File? profilFoto) async {
+    var indirmeLinki = await _userRepository!.uploadFile(
+        userID, fileType, profilFoto);
     return indirmeLinki;
- }
+  }
+  Future<List<MyUser>> getAllUser() async{
+    var tumKullaniciListesi = await  _userRepository!.getAllUser();
+    return tumKullaniciListesi;
+  }
 }

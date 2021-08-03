@@ -34,7 +34,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   void _kameradanFotoCek() async {
     var _yeniResim =
-        await ImagePicker.platform.pickImage(source: ImageSource.camera);
+    await ImagePicker.platform.pickImage(source: ImageSource.camera);
 
     setState(() {
       _profilFoto = File(_yeniResim!.path);
@@ -44,7 +44,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   void _galeridenResimSec() async {
     var _yeniResim =
-        await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+    await ImagePicker.platform.pickImage(source: ImageSource.gallery);
 
     setState(() {
       _profilFoto = File(_yeniResim!.path);
@@ -109,8 +109,8 @@ class _ProfilPageState extends State<ProfilPage> {
                     backgroundColor: Colors.white,
                     backgroundImage: _profilFoto == null
                         ? NetworkImage(
-                            _userModel.user!.profilURL.toString(),
-                          )
+                      _userModel.user!.profilURL.toString(),
+                    )
                         : FileImage(_profilFoto!) as ImageProvider,
                   ),
                 ),
@@ -206,6 +206,14 @@ class _ProfilPageState extends State<ProfilPage> {
       var url = await _userModel.uploadFile(
           _userModel.user!.userID, "profil_foto", _profilFoto);
       print("gelen url :" + url!);
+
+      if (url != null) {
+        PlatformDuyarliAlertDialog(
+          baslik: "Başarılı",
+          icerik: "Profil fotoğrafı başarılı bir şekilde güncellendi.",
+          anaButonYazisi: 'Tamam',
+        ).goster(context);
+      }
     }
   }
 }
