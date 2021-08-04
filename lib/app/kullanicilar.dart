@@ -1,4 +1,4 @@
-import 'package:chat_app/app/konusma.dart';
+import 'package:chat_app/app/konusmalarim_page.dart';
 import 'package:chat_app/model/user.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,7 @@ class KullanicilarPage extends StatelessWidget {
                             Navigator
                                 .of(context, rootNavigator: true)
                                 .push(MaterialPageRoute(
-                              builder: (context) => Konusma(sohbetEdilenUser: oankiUser, currentUser: _userModel.user,),),);
+                              builder: (context) => KonusmalarimPage(sohbetEdilenUser: oankiUser, currentUser: _userModel.user,),),);
                             },
                           child: ListTile(
                             title: Text(oankiUser.userName.toString()),

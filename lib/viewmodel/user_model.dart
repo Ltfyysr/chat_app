@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app/locator.dart';
+import 'package:chat_app/model/mesaj.dart';
 import 'package:chat_app/model/user.dart';
 import 'package:chat_app/repository/user_repository.dart';
 import 'package:chat_app/services/auth_base.dart';
@@ -165,5 +166,13 @@ class UserModel with ChangeNotifier implements AuthBase {
   Future<List<MyUser>> getAllUser() async{
     var tumKullaniciListesi = await  _userRepository!.getAllUser();
     return tumKullaniciListesi;
+  }
+
+ Stream<List<Mesaj>> getMessages(String currentUserID, String sohbetEdilenUserID) {
+   return _userRepository!.getMessages(currentUserID,sohbetEdilenUserID);
+ }
+
+  Future<bool?> saveMessage(Mesaj kaydedilecekMesaj) {
+    return _userRepository!.saveMessage(kaydedilecekMesaj);
   }
 }
