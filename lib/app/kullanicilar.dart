@@ -1,3 +1,4 @@
+import 'package:chat_app/app/konusma.dart';
 import 'package:chat_app/model/user.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ class KullanicilarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserModel _userModel = Provider.of<UserModel>(context);
-   // _userModel.getAllUser();
+    // _userModel.getAllUser();
     return Scaffold(
         appBar: AppBar(title: Text("Kullanıcılar")),
         body: FutureBuilder<List<MyUser>>(
@@ -24,10 +25,19 @@ class KullanicilarPage extends StatelessWidget {
                       var oankiUser = sonuc.data![index];
                       if (oankiUser.userID !=
                           _userModel.user!.userID) {
-                        return ListTile(
-                          title: Text(oankiUser.userName.toString()),
-                          subtitle: Text(oankiUser.email.toString()),
-                          leading: CircleAvatar(backgroundImage: NetworkImage(oankiUser.profilURL.toString()),),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator
+                                .of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(
+                              builder: (context) => Konusma(sohbetEdilenUser: oankiUser, currentUser: _userModel.user,),),);
+                            },
+                          child: ListTile(
+                            title: Text(oankiUser.userName.toString()),
+                            subtitle: Text(oankiUser.email.toString()),
+                            leading: CircleAvatar(backgroundImage: NetworkImage(
+                                oankiUser.profilURL.toString()),),
+                          ),
                         );
                       } else {
                         return Container();
