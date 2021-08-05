@@ -6,17 +6,17 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class KonusmalarimPage extends StatefulWidget {
-  KonusmalarimPage({required this.currentUser, required this.sohbetEdilenUser});
+class SohbetPage extends StatefulWidget {
+  SohbetPage({required this.currentUser, required this.sohbetEdilenUser});
 
   final MyUser? currentUser;
   final MyUser sohbetEdilenUser;
 
   @override
-  _KonusmalarimPageState createState() => _KonusmalarimPageState();
+  _SohbetPageState createState() => _SohbetPageState();
 }
 
-class _KonusmalarimPageState extends State<KonusmalarimPage> {
+class _SohbetPageState extends State<SohbetPage> {
   var _mesajController = TextEditingController();
   ScrollController _scrollController = new ScrollController();
 
@@ -167,6 +167,7 @@ class _KonusmalarimPageState extends State<KonusmalarimPage> {
             Row(
               children: [
                 CircleAvatar(
+                  backgroundColor: Colors.grey.withAlpha(40),
                   backgroundImage: NetworkImage(
                       widget.sohbetEdilenUser.profilURL.toString()),
                 ),
@@ -189,6 +190,7 @@ class _KonusmalarimPageState extends State<KonusmalarimPage> {
       );
     }
   }
+
 
   String _saatDakikaGoster(Timestamp? date) {
     var _formatter = DateFormat.Hm();
