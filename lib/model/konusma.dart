@@ -7,10 +7,10 @@ class Konusma {
   final Timestamp? olusturulma_tarihi;
   final String? son_yollanan_mesaj;
   final Timestamp? gorulme_tarihi;
-  /*String konusulanUserName;
-  String konusulanUserProfilURL;
-  DateTime sonOkunmaZamani;
-  String aradakiFark;*/
+  String? konusulanUserName;
+  String? konusulanUserProfilURL;
+  DateTime? sonOkunmaZamani;
+  String? aradakiFark;
 
   Konusma(
       {required this.konusma_sahibi,

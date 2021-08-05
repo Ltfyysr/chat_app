@@ -29,7 +29,8 @@ class _KonusmalarimPageState extends State<KonusmalarimPage> {
             return ListView.builder(itemBuilder:(context,index){
               var oankiKonusma = tumKonusmalar![index];
               return ListTile(title:Text(oankiKonusma.son_yollanan_mesaj.toString()),
-              subtitle: Text(oankiKonusma.kimle_konusuyor.toString()),);
+              subtitle: Text(oankiKonusma.konusulanUserName.toString()),
+              leading: CircleAvatar(backgroundImage: NetworkImage(oankiKonusma.konusulanUserProfilURL.toString()),),);
             },itemCount:tumKonusmalar!.length ,);
           }
         },
