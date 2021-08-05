@@ -39,6 +39,7 @@ dependencies:
   map: ^1.0.0
   image_picker: ^0.8.2
   firebase_storage: ^10.0.1
+  intl: ^0.17.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

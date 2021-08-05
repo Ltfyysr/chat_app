@@ -1,4 +1,4 @@
-import 'package:chat_app/app/konusmalarim_page.dart';
+import 'package:chat_app/app/sohbet_page.dart';
 import 'package:chat_app/model/user.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';

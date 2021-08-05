@@ -1,3 +1,4 @@
+import 'package:chat_app/model/konusma.dart';
 import 'package:chat_app/model/mesaj.dart';
 import 'package:chat_app/model/user.dart';
 import 'package:chat_app/services/database_base.dart';
@@ -77,6 +78,23 @@ class FirestoreDBService implements DBBase {
   }
 
   @override
+  Future<List<Konusma>> getAllConversations(String userID) async {
+    QuerySnapshot? _querySnapshot = await _firebaseDB
+        .collection("konusmalar")
+        .where("konusma_sahibi", isEqualTo: userID)
+        .orderBy("olusturulma_tarihi", descending: true)
+        .get();
+    List<Konusma> tumKonusmalar = [];
+
+    for (DocumentSnapshot tekKonusma in _querySnapshot.docs) {
+      //print("okunan user :"+tekUser.data().toString());
+      Konusma _tekKonusma = Konusma.fromMap(tekKonusma.data() as Map<String, dynamic>);
+      tumKonusmalar.add(_tekKonusma);
+    }
+    return tumKonusmalar;
+  }
+
+  @override
   Stream<List<Mesaj>> getMessages(
       String currentUserID, String sohbetEdilenUserID) {
     var snapShot = _firebaseDB
@@ -102,6 +120,15 @@ class FirestoreDBService implements DBBase {
         .collection("mesajlar")
         .doc(_mesajID)
         .set(_kaydedilecekMesajMapYapisi);
+
+    await _firebaseDB.collection("konusmalar").doc(_myDocumentID).set({
+      "konusma_sahibi": kaydedilecekMesaj.kimden,
+      "kimle_konusuyor": kaydedilecekMesaj.kime,
+      "son_yollanan_mesaj": kaydedilecekMesaj.mesaj,
+      "konusma_goruldu": false,
+      "olusturulma_tarihi": FieldValue.serverTimestamp(),
+    });
+
     _kaydedilecekMesajMapYapisi.update(
         "bendenMi", (deger) => false); //var olan map i değiştirdik.
     await _firebaseDB
@@ -110,6 +137,15 @@ class FirestoreDBService implements DBBase {
         .collection("mesajlar")
         .doc(_mesajID)
         .set(_kaydedilecekMesajMapYapisi);
+
+    await _firebaseDB.collection("konusmalar").doc(_receiverDocumentID).set({
+      "konusma_sahibi": kaydedilecekMesaj.kime,
+      "kimle_konusuyor": kaydedilecekMesaj.kimden,
+      "son_yollanan_mesaj": kaydedilecekMesaj.mesaj,
+      "konusma_goruldu": false,
+      "olusturulma_tarihi": FieldValue.serverTimestamp(),
+    });
+
     return true;
   }
 }

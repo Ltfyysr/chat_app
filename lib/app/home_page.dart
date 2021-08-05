@@ -1,9 +1,11 @@
+import 'package:chat_app/app/konusmalarim_page.dart';
 import 'package:chat_app/app/kullanicilar.dart';
 import 'package:chat_app/app/my_custom_bottom_navi.dart';
 import 'package:chat_app/app/profil.dart';
 import 'package:chat_app/app/tab_items.dart';
 import 'package:flutter/material.dart';
 import '../model/user.dart';
+
 //sadece oturum açan kullanıcıların gördüğü sayfa
 
 class HomePage extends StatefulWidget {
@@ -20,12 +22,14 @@ class _HomePageState extends State<HomePage> {
 
   Map<TabItem, GlobalKey<NavigatorState>> navigatorKeys = {
     TabItem.Kullanicilar: GlobalKey<NavigatorState>(),
+    TabItem.Konusmalarim: GlobalKey<NavigatorState>(),
     TabItem.Profil: GlobalKey<NavigatorState>(),
   };
 
   Map<TabItem, Widget> tumSayfalar() {
     return {
       TabItem.Kullanicilar: KullanicilarPage(),
+      TabItem.Konusmalarim: KonusmalarimPage(),
       TabItem.Profil: ProfilPage(),
     };
   }

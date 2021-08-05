@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app/locator.dart';
+import 'package:chat_app/model/konusma.dart';
 import 'package:chat_app/model/mesaj.dart';
 import 'package:chat_app/model/user.dart';
 import 'package:chat_app/services/auth_base.dart';
@@ -149,5 +150,13 @@ class UserRepository implements AuthBase {
       return _firestoreDBService.saveMessage(kaydedilecekMesaj);
     }
 
+  }
+
+  Future<List<Konusma>> getAllConversations(String userID)async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      return  _firestoreDBService.getAllConversations(userID);
+    }
   }
 }

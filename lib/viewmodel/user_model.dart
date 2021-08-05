@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app/locator.dart';
+import 'package:chat_app/model/konusma.dart';
 import 'package:chat_app/model/mesaj.dart';
 import 'package:chat_app/model/user.dart';
 import 'package:chat_app/repository/user_repository.dart';
@@ -172,7 +173,11 @@ class UserModel with ChangeNotifier implements AuthBase {
    return _userRepository!.getMessages(currentUserID,sohbetEdilenUserID);
  }
 
-  Future<bool?> saveMessage(Mesaj kaydedilecekMesaj) {
-    return _userRepository!.saveMessage(kaydedilecekMesaj);
+  Future<bool?> saveMessage(Mesaj kaydedilecekMesaj) async {
+    return await _userRepository!.saveMessage(kaydedilecekMesaj);
   }
+
+ Future<List<Konusma>> getAllConversations(String userID) async{
+    return await _userRepository!.getAllConversations(userID);
+ }
 }
