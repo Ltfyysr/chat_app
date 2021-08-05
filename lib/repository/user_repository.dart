@@ -9,6 +9,7 @@ import 'package:chat_app/services/fake_auth_service.dart';
 import 'package:chat_app/services/firebase_auth_service.dart';
 import 'package:chat_app/services/firebase_storage_service.dart';
 import 'package:chat_app/services/firestore_db_service.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 enum AppMode { DEBUG, RELEASE }
 
@@ -163,6 +164,7 @@ class UserRepository implements AuthBase {
     if (appMode == AppMode.DEBUG) {
       return [];
     } else {
+      DateTime? _zaman = await _firestoreDBService.saatiGoster(userID);
       var konusmaListesi =
           await _firestoreDBService.getAllConversations(userID);
       for(var oankiKonusma in konusmaListesi){
@@ -172,13 +174,16 @@ class UserRepository implements AuthBase {
           print("VERILER LOCAL CACHEDEN OKUNDU");
           oankiKonusma.konusulanUserName = userListesindekiKullanici.userName;
           oankiKonusma.konusulanUserProfilURL =userListesindekiKullanici.profilURL;
+
         }else{
           print("VERILER VERITABANINDAN OKUNDU");
           print("aranılan user daha önceden veritabanından getirilmemiş o yüzden veritabanından bu değeri okumalıyız");
           var _veritabanindanOkunanUser =await _firestoreDBService.readUser(oankiKonusma.kimle_konusuyor.toString());
           oankiKonusma.konusulanUserName = _veritabanindanOkunanUser!.userName;
           oankiKonusma.konusulanUserProfilURL =_veritabanindanOkunanUser.profilURL;
+
         }
+        timeagoHesapla(oankiKonusma,_zaman);
       }
       return konusmaListesi;
     }
@@ -191,5 +196,13 @@ class UserRepository implements AuthBase {
       }
     }
     return null;
+  }
+
+  void timeagoHesapla(Konusma oankiKonusma, DateTime? zaman) {
+
+    oankiKonusma.sonOkunmaZamani= zaman;
+    timeago.setLocaleMessages("tr", timeago.TrMessages()); // mesajın ne kadar süre önce geldiğini türkçe yazdırma
+    var _duration = zaman!.difference(oankiKonusma.olusturulma_tarihi!.toDate());
+    oankiKonusma.aradakiFark =timeago.format(zaman.subtract(_duration), locale:"tr" );
   }
 }
