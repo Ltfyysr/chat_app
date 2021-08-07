@@ -59,23 +59,7 @@ class FirestoreDBService implements DBBase {
         .update({'profilURL': profilFotoUrl});
     return true;
   }
-
-  @override
-  Future<List<MyUser>> getAllUser() async {
-    QuerySnapshot? _querySnapshot =
-        await FirebaseFirestore.instance.collection("users").get();
-
-    List<MyUser> tumKullanicilar = [];
-    for (DocumentSnapshot tekUser in _querySnapshot.docs) {
-      //print("okunan user :"+tekUser.data().toString());
-      MyUser _tekUser = MyUser.fromMap(tekUser.data() as Map<String, dynamic>);
-      tumKullanicilar.add(_tekUser);
-    }
-    //map metodu ile
-    //tumKullanicilar = _querySnapshot.docs.map((tekSatir) => MyUser.fromMap(tekSatir.data().toList();
-
-    return tumKullanicilar;
-  }
+  
 
   @override
   Future<List<Konusma>> getAllConversations(String userID) async {
@@ -156,5 +140,32 @@ class FirestoreDBService implements DBBase {
     var okunanMap = await _firebaseDB.collection("server").doc(userID).get(); //okuduk
     Timestamp okunanTarih = okunanMap.data()!["saat"];
     return okunanTarih.toDate();
+  }
+
+  @override
+  Future<List<MyUser>> getUserWithPagination(MyUser? enSonGetirilenUser, int getirilecekElemanSayisi) async {
+    QuerySnapshot _querySnapshot;
+    List<MyUser> _tumKullanicilar=[];
+    if (enSonGetirilenUser == null) {
+      _querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .orderBy("userName")
+          .limit(getirilecekElemanSayisi)
+          .get();
+
+    } else {
+      _querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .orderBy("userName")
+          .startAfter([enSonGetirilenUser.userName])
+          .limit(getirilecekElemanSayisi)
+          .get();
+      await Future.delayed(Duration(seconds: 1));
+    }
+    for (DocumentSnapshot snap in _querySnapshot.docs) {
+      MyUser _tekUser = MyUser.fromMap(snap.data() as Map<String, dynamic>);
+      _tumKullanicilar.add(_tekUser);
+    }
+    return _tumKullanicilar;
   }
 }

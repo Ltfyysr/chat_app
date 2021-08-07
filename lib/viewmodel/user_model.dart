@@ -164,10 +164,6 @@ class UserModel with ChangeNotifier implements AuthBase {
         userID, fileType, profilFoto);
     return indirmeLinki;
   }
-  Future<List<MyUser>> getAllUser() async{
-    var tumKullaniciListesi = await  _userRepository!.getAllUser();
-    return tumKullaniciListesi;
-  }
 
  Stream<List<Mesaj>> getMessages(String currentUserID, String sohbetEdilenUserID) {
    return _userRepository!.getMessages(currentUserID,sohbetEdilenUserID);
@@ -179,5 +175,9 @@ class UserModel with ChangeNotifier implements AuthBase {
 
  Future<List<Konusma>> getAllConversations(String userID) async{
     return await _userRepository!.getAllConversations(userID);
+ }
+
+ Future<List<MyUser>> getUserWithPagination(MyUser enSonGetirilenUser, int getirilecekElemanSayisi) async{
+   return await _userRepository!.getUserWithPagination(enSonGetirilenUser,getirilecekElemanSayisi);
  }
 }

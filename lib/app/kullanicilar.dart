@@ -1,93 +1,149 @@
 import 'package:chat_app/app/sohbet_page.dart';
-import 'package:chat_app/model/user.dart';
+import 'package:chat_app/viewmodel/all_users_view_model.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class KullanicilarPage extends StatefulWidget {
-  const KullanicilarPage({Key? key}) : super(key: key);
-
   @override
   _KullanicilarPageState createState() => _KullanicilarPageState();
 }
 
 class _KullanicilarPageState extends State<KullanicilarPage> {
+  bool _isLoading = false;
+  ScrollController _scrollController = ScrollController();
+
   @override
-  Widget build(BuildContext context) {
-    UserModel _userModel = Provider.of<UserModel>(context);
-    return Scaffold(
-        appBar: AppBar(title: Text("Kullanıcılar")),
-        body: FutureBuilder<List<MyUser>>(
-            future: _userModel.getAllUser(),
-            builder: (context, sonuc) {
-              if (sonuc.hasData) {
-                var tumKullanicilar = sonuc.data;
-                if (tumKullanicilar!.length - 1 > 0) {
-                  return RefreshIndicator(
-                    onRefresh: _kullanicilarListesiniGuncelle,
-                    child: ListView.builder(
-                      itemCount: tumKullanicilar.length,
-                      itemBuilder: (context, index) {
-                        var oankiUser = sonuc.data![index];
-                        if (oankiUser.userID != _userModel.user!.userID) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute(
-                                  builder: (context) => SohbetPage(
-                                    sohbetEdilenUser: oankiUser,
-                                    currentUser: _userModel.user,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: ListTile(
-                              title: Text(oankiUser.userName.toString()),
-                              subtitle: Text(oankiUser.email.toString()),
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.grey.withAlpha(40),
-                                backgroundImage: NetworkImage(
-                                    oankiUser.profilURL.toString()),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
-                    ),
-                  );
-                } else {
-
-                  return RefreshIndicator(// scrolview olmadan çalışmaz
-                    onRefresh: _kullanicilarListesiniGuncelle,
-                    child: SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      child: Container(
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Icons.supervised_user_circle, color: Theme.of(context).primaryColor,size: 100,),
-                              Text("Henüz bir kullanıcı bulunmamaktadır", textAlign: TextAlign.center,style: TextStyle(fontSize: 25),),
-                            ],),
-                        ),
-                        height: MediaQuery.of(context).size.height-150,
-                      ),
-                    ),
-                  );
-
-                }
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }));
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_listeScrollListener);
   }
 
-  Future<Null> _kullanicilarListesiniGuncelle() async {
-    await Future.delayed(Duration(seconds: 1));
-    return null;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Kullanicilar"),
+      ),
+      body: Consumer<AllUserViewModel>(
+        builder: (context, model, child) {
+          if (model.state == AllUserViewState.Busy) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (model.state == AllUserViewState.Loaded) {
+            return RefreshIndicator(
+              onRefresh: model.refresh,
+              child: ListView.builder(
+                controller: _scrollController,
+                itemBuilder: (context, index) {
+                  if (model.kullanicilarListesi!.length == 1) {
+                    return _kullaniciYokUi();
+                  } else if (model.hasMoreLoading &&
+                      index == model.kullanicilarListesi!.length) {
+                    return _yeniElemanlarYukleniyorIndicator();
+                  } else {
+                    return _userListeElemaniOlustur(index);
+                  }
+                },
+                itemCount: model.hasMoreLoading
+                    ? model.kullanicilarListesi!.length + 1
+                    : model.kullanicilarListesi!.length,
+              ),
+            );
+          } else {
+            return Container();
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _kullaniciYokUi() {
+    final _kullanicilarModel = Provider.of<AllUserViewModel>(context);
+    return RefreshIndicator(
+      onRefresh: _kullanicilarModel.refresh,
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Container(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.supervised_user_circle,
+                  color: Theme.of(context).primaryColor,
+                  size: 120,
+                ),
+                Text(
+                  "Henüz Kullanıcı Yok",
+                  style: TextStyle(fontSize: 36),
+                )
+              ],
+            ),
+          ),
+          height: MediaQuery.of(context).size.height - 150,
+        ),
+      ),
+    );
+  }
+
+  Widget _userListeElemaniOlustur(int index) {
+    final _userModel = Provider.of<UserModel>(context);
+    final _tumKullanicilarViewModel = Provider.of<AllUserViewModel>(context);
+    var _oankiUser = _tumKullanicilarViewModel.kullanicilarListesi![index];
+
+    if (_oankiUser.userID == _userModel.user!.userID) {
+      return Container();
+    }
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+            builder: (context) => SohbetPage(sohbetEdilenUser: _oankiUser, currentUser: _userModel.user,),
+            ),
+          );
+      },
+      child: Card(
+        child: ListTile(
+          title: Text(_oankiUser.userName.toString()),
+          subtitle: Text(_oankiUser.email.toString()),
+          leading: CircleAvatar(
+            backgroundColor: Colors.grey.withAlpha(40),
+            backgroundImage: NetworkImage(_oankiUser.profilURL.toString()),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _yeniElemanlarYukleniyorIndicator() {
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  void dahaFazlaKullaniciGetir() async {
+    if (_isLoading == false) {
+      _isLoading = true;
+      final _tumKullanicilarViewModel = Provider.of<AllUserViewModel>(context,listen: false);
+      await _tumKullanicilarViewModel.dahaFazlaUserGetir();
+      _isLoading = false;
+    }
+  }
+
+  void _listeScrollListener() {
+    if (_scrollController.offset >=
+        _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      print("Listenin en altındayız");
+      dahaFazlaKullaniciGetir();
+    }
   }
 }

@@ -3,14 +3,15 @@ import 'package:chat_app/app/kullanicilar.dart';
 import 'package:chat_app/app/my_custom_bottom_navi.dart';
 import 'package:chat_app/app/profil.dart';
 import 'package:chat_app/app/tab_items.dart';
+import 'package:chat_app/viewmodel/all_users_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../model/user.dart';
 
 //sadece oturum açan kullanıcıların gördüğü sayfa
 
 class HomePage extends StatefulWidget {
   final MyUser? user;
-
   HomePage({Key? key, required this.user}) : super(key: key);
 
   @override
@@ -28,7 +29,9 @@ class _HomePageState extends State<HomePage> {
 
   Map<TabItem, Widget> tumSayfalar() {
     return {
-      TabItem.Kullanicilar: KullanicilarPage(),
+      TabItem.Kullanicilar: ChangeNotifierProvider(
+          create: (context) => AllUserViewModel(),
+          child: KullanicilarPage(),),
       TabItem.Konusmalarim: KonusmalarimPage(),
       TabItem.Profil: ProfilPage(),
     };

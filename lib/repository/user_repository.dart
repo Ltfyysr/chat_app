@@ -131,17 +131,6 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Future<List<MyUser>> getAllUser() async {
-    if (appMode == AppMode.DEBUG) {
-      return [];
-    } else {
-      tumKullaniciListesi = await _firestoreDBService
-          .getAllUser(); //yukarıda tanımladığımız listeye erişecek,veritabanından burası doldurulacak
-      //varsa verileri burdan al yoksa netten getir
-
-      return tumKullaniciListesi;
-    }
-  }
 
   Stream<List<Mesaj>> getMessages(
       String currentUserID, String sohbetEdilenUserID) {
@@ -205,4 +194,16 @@ class UserRepository implements AuthBase {
     var _duration = zaman!.difference(oankiKonusma.olusturulma_tarihi!.toDate());
     oankiKonusma.aradakiFark =timeago.format(zaman.subtract(_duration), locale:"tr" );
   }
+
+ Future<List<MyUser>> getUserWithPagination(MyUser? enSonGetirilenUser, int getirilecekElemanSayisi) async{
+   if (appMode == AppMode.DEBUG) {
+     return [];
+   } else {
+     List<MyUser> _userList = await _firestoreDBService.getUserWithPagination(enSonGetirilenUser, getirilecekElemanSayisi);
+     tumKullaniciListesi.addAll(_userList);
+     return _userList;
+   }
+ }
+
+  getMessageWithPagination(String userID, String userID2, Mesaj? enSonGetirilenMesaj, int sayfaBasinaGonderiSayisi) {}
 }
