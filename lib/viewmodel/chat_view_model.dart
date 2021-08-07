@@ -23,9 +23,9 @@ class ChatViewModel with ChangeNotifier {
   Mesaj? _enSonGetirilenMesaj;
   Mesaj? _listeyeEklenenIlkMesaj;
   bool  _hasMore = true;
-  bool? _yeniMesajDinleListener = false;
+  bool _yeniMesajDinleListener = false;
 
-  bool? get hasMoreLoading => _hasMore;
+  bool get hasMoreLoading => _hasMore;
 
   StreamSubscription? _streamSubscription;
 

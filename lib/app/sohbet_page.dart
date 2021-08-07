@@ -6,6 +6,7 @@ import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:chat_app/theme_cubit.dart';
 
 class SohbetPage extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class SohbetPage extends StatefulWidget {
 class _SohbetPageState extends State<SohbetPage> {
   var _mesajController = TextEditingController();
   ScrollController _scrollController = new ScrollController();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -22,22 +24,27 @@ class _SohbetPageState extends State<SohbetPage> {
     super.initState();
     _scrollController.addListener(_scrollListener);
   }
+
   @override
   Widget build(BuildContext context) {
-    UserModel _userModel = Provider.of<UserModel>(context);
+    final _chatModel = Provider.of<ChatViewModel>(context);
     return Scaffold(
-      backgroundColor: Colors.deepPurple.shade100,
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         title: Text("Sohbet"),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            _buildMesajListesi(),
-            _buildYeniMesajGir(),
-          ],
-        ),
-      ),
+      body: _chatModel.state == ChatViewState.Busy
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Center(
+              child: Column(
+                children: [
+                  _buildMesajListesi(),
+                  _buildYeniMesajGir(),
+                ],
+              ),
+            ),
     );
   }
 
@@ -48,9 +55,15 @@ class _SohbetPageState extends State<SohbetPage> {
           controller: _scrollController,
           reverse: true,
           itemBuilder: (context, index) {
-            return _konusmaBalonuOlustur(chatModel.mesajlarListesi![index]);
+            if (chatModel.hasMoreLoading &&
+                chatModel.mesajlarListesi!.length == index) {
+              return _yeniElemanlarYukleniyorIndicator();
+            } else
+              return _konusmaBalonuOlustur(chatModel.mesajlarListesi![index]);
           },
-          itemCount: chatModel.mesajlarListesi!.length,
+          itemCount: chatModel.hasMoreLoading
+              ? chatModel.mesajlarListesi!.length + 1
+              : chatModel.mesajlarListesi!.length,
         ),
       );
     });
@@ -102,8 +115,7 @@ class _SohbetPageState extends State<SohbetPage> {
                     mesaj: _mesajController.text,
                     kime: _chatModel.sohbetEdilenUser.userID,
                   );
-                  var sonuc = await _chatModel.saveMessage(
-                      _kaydedilecekMesaj);
+                  var sonuc = await _chatModel.saveMessage(_kaydedilecekMesaj);
                   if (sonuc == true) {
                     _mesajController.clear();
                     _scrollController.animateTo(
@@ -123,7 +135,7 @@ class _SohbetPageState extends State<SohbetPage> {
 
   Widget _konusmaBalonuOlustur(Mesaj oankiMesaj) {
     Color _gelenMesajRenk = Colors.deepPurple.shade300;
-    Color _gidenMesajRenk = Theme.of(context).primaryColor;
+    Color _gidenMesajRenk = Colors.deepPurple.shade400;
     final _chatModel = Provider.of<ChatViewModel>(context);
     var _saatDakikaDegeri = "";
     try {
@@ -200,14 +212,28 @@ class _SohbetPageState extends State<SohbetPage> {
 
   void _scrollListener() {
     if (_scrollController.offset >=
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       print("Listenin en altındayız");
       eskiMesajlariGetir();
     }
   }
 
-  void eskiMesajlariGetir() {
-    print("listenin en üstündeyiz eski mesajlari getir");
+  void eskiMesajlariGetir() async {
+    final _chatModel = Provider.of<ChatViewModel>(context, listen: false);
+    if (_isLoading == false) {
+      _isLoading = true;
+      await _chatModel.dahaFazlaMesajGetir();
+      _isLoading = false;
+    }
+  }
+
+  _yeniElemanlarYukleniyorIndicator() {
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }

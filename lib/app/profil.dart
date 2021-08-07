@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../theme_cubit.dart';
 
 class ProfilPage extends StatefulWidget {
   const ProfilPage({Key? key}) : super(key: key);
@@ -34,7 +36,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   void _kameradanFotoCek() async {
     var _yeniResim =
-    await ImagePicker.platform.pickImage(source: ImageSource.camera);
+        await ImagePicker.platform.pickImage(source: ImageSource.camera);
 
     setState(() {
       _profilFoto = File(_yeniResim!.path);
@@ -44,7 +46,7 @@ class _ProfilPageState extends State<ProfilPage> {
 
   void _galeridenResimSec() async {
     var _yeniResim =
-    await ImagePicker.platform.pickImage(source: ImageSource.gallery);
+        await ImagePicker.platform.pickImage(source: ImageSource.gallery);
 
     setState(() {
       _profilFoto = File(_yeniResim!.path);
@@ -58,18 +60,41 @@ class _ProfilPageState extends State<ProfilPage> {
     _controllerUserName.text = _userModel.user!.userName!;
     print("Profil sayfasındaki user değerleri :" + _userModel.user.toString());
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Profil"),
-        actions: [
-          TextButton(
-            onPressed: () => _cikisIcinOnayIste(context),
-            child: Text(
-              "Çıkış",
-              style: TextStyle(color: Colors.white, fontSize: 18),
+      appBar: AppBar(title: Text("Profil"), actions: [
+        PopupMenuButton(itemBuilder: (context) {
+          return [
+            PopupMenuItem(
+              child: ListTile(
+                leading: Icon(
+                  Icons.clear,
+                  color: Colors.deepPurple,
+                ),
+                title: Text(
+                  "Çıkış Yap",
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _cikisIcinOnayIste(context);
+                },
+              ),
             ),
-          )
-        ],
-      ),
+            PopupMenuItem(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3.0),
+                child: ListTile(
+                  leading: const Icon(Icons.brightness_6, color: Colors.deepPurple,),
+                  title: Text(
+                    "Tema Değiştir",
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  onTap: () => context.read<ThemeCubit>().temaDegistir(),
+                ),
+              ),
+            ),
+          ];
+        }),
+      ]),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -98,7 +123,7 @@ class _ProfilPageState extends State<ProfilPage> {
                                   onTap: () {
                                     _galeridenResimSec();
                                   },
-                                )
+                                ),
                               ],
                             ),
                           );
@@ -109,8 +134,8 @@ class _ProfilPageState extends State<ProfilPage> {
                     backgroundColor: Colors.white,
                     backgroundImage: _profilFoto == null
                         ? NetworkImage(
-                      _userModel.user!.profilURL.toString(),
-                    )
+                            _userModel.user!.profilURL.toString(),
+                          )
                         : FileImage(_profilFoto!) as ImageProvider,
                   ),
                 ),
@@ -151,7 +176,14 @@ class _ProfilPageState extends State<ProfilPage> {
                       _userNameGuncelle(context);
                       _profilFotoGuncelle(context);
                     }),
-              )
+              ),
+              /*Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: FloatingActionButton(
+                  child: const Icon(Icons.brightness_6),
+                  onPressed: () => context.read<ThemeCubit>().temaDegistir(),
+                ),
+              ),*/
             ],
           ),
         ),
