@@ -131,7 +131,6 @@ class UserRepository implements AuthBase {
     }
   }
 
-
   Stream<List<Mesaj>> getMessages(
       String currentUserID, String sohbetEdilenUserID) {
     if (appMode == AppMode.DEBUG) {
@@ -156,31 +155,34 @@ class UserRepository implements AuthBase {
       DateTime? _zaman = await _firestoreDBService.saatiGoster(userID);
       var konusmaListesi =
           await _firestoreDBService.getAllConversations(userID);
-      for(var oankiKonusma in konusmaListesi){
-        var userListesindekiKullanici = listedeUserBul(oankiKonusma.kimle_konusuyor.toString());
+      for (var oankiKonusma in konusmaListesi) {
+        var userListesindekiKullanici =
+            listedeUserBul(oankiKonusma.kimle_konusuyor.toString());
 
-        if(userListesindekiKullanici != null){
+        if (userListesindekiKullanici != null) {
           print("VERILER LOCAL CACHEDEN OKUNDU");
           oankiKonusma.konusulanUserName = userListesindekiKullanici.userName;
-          oankiKonusma.konusulanUserProfilURL =userListesindekiKullanici.profilURL;
-
-        }else{
+          oankiKonusma.konusulanUserProfilURL =
+              userListesindekiKullanici.profilURL;
+        } else {
           print("VERILER VERITABANINDAN OKUNDU");
-          print("aranılan user daha önceden veritabanından getirilmemiş o yüzden veritabanından bu değeri okumalıyız");
-          var _veritabanindanOkunanUser =await _firestoreDBService.readUser(oankiKonusma.kimle_konusuyor.toString());
+          print(
+              "aranılan user daha önceden veritabanından getirilmemiş o yüzden veritabanından bu değeri okumalıyız");
+          var _veritabanindanOkunanUser = await _firestoreDBService
+              .readUser(oankiKonusma.kimle_konusuyor.toString());
           oankiKonusma.konusulanUserName = _veritabanindanOkunanUser!.userName;
-          oankiKonusma.konusulanUserProfilURL =_veritabanindanOkunanUser.profilURL;
-
+          oankiKonusma.konusulanUserProfilURL =
+              _veritabanindanOkunanUser.profilURL;
         }
-        timeagoHesapla(oankiKonusma,_zaman);
+        timeagoHesapla(oankiKonusma, _zaman);
       }
       return konusmaListesi;
     }
   }
 
-  MyUser? listedeUserBul(String userID){
-    for(int i=0; i<tumKullaniciListesi.length; i++){
-      if(tumKullaniciListesi[i].userID == userID){
+  MyUser? listedeUserBul(String userID) {
+    for (int i = 0; i < tumKullaniciListesi.length; i++) {
+      if (tumKullaniciListesi[i].userID == userID) {
         return tumKullaniciListesi[i];
       }
     }
@@ -188,22 +190,39 @@ class UserRepository implements AuthBase {
   }
 
   void timeagoHesapla(Konusma oankiKonusma, DateTime? zaman) {
-
-    oankiKonusma.sonOkunmaZamani= zaman;
-    timeago.setLocaleMessages("tr", timeago.TrMessages()); // mesajın ne kadar süre önce geldiğini türkçe yazdırma
-    var _duration = zaman!.difference(oankiKonusma.olusturulma_tarihi!.toDate());
-    oankiKonusma.aradakiFark =timeago.format(zaman.subtract(_duration), locale:"tr" );
+    oankiKonusma.sonOkunmaZamani = zaman;
+    timeago.setLocaleMessages(
+        "tr",
+        timeago
+            .TrMessages()); // mesajın ne kadar süre önce geldiğini türkçe yazdırma
+    var _duration =
+        zaman!.difference(oankiKonusma.olusturulma_tarihi!.toDate());
+    oankiKonusma.aradakiFark =
+        timeago.format(zaman.subtract(_duration), locale: "tr");
   }
 
- Future<List<MyUser>> getUserWithPagination(MyUser? enSonGetirilenUser, int getirilecekElemanSayisi) async{
-   if (appMode == AppMode.DEBUG) {
-     return [];
-   } else {
-     List<MyUser> _userList = await _firestoreDBService.getUserWithPagination(enSonGetirilenUser, getirilecekElemanSayisi);
-     tumKullaniciListesi.addAll(_userList);
-     return _userList;
-   }
- }
+  Future<List<MyUser>> getUserWithPagination(
+      MyUser? enSonGetirilenUser, int getirilecekElemanSayisi) async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      List<MyUser> _userList = await _firestoreDBService.getUserWithPagination(
+          enSonGetirilenUser, getirilecekElemanSayisi);
+      tumKullaniciListesi.addAll(_userList);
+      return _userList;
+    }
+  }
 
-  getMessageWithPagination(String userID, String userID2, Mesaj? enSonGetirilenMesaj, int sayfaBasinaGonderiSayisi) {}
+  Future<List<Mesaj>> getMessageWithPagination(
+      String currentUserID,
+      String sohbetEdilenUserID,
+      int getirilecekElemanSayisi,
+      Mesaj? enSonGetirilenMesaj) async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      return await _firestoreDBService.getMessageWithPagination(currentUserID,
+          sohbetEdilenUserID,enSonGetirilenMesaj, getirilecekElemanSayisi);
+    }
+  }
 }

@@ -59,7 +59,6 @@ class FirestoreDBService implements DBBase {
         .update({'profilURL': profilFotoUrl});
     return true;
   }
-  
 
   @override
   Future<List<Konusma>> getAllConversations(String userID) async {
@@ -72,7 +71,8 @@ class FirestoreDBService implements DBBase {
 
     for (DocumentSnapshot tekKonusma in _querySnapshot.docs) {
       //print("okunan user :"+tekUser.data().toString());
-      Konusma _tekKonusma = Konusma.fromMap(tekKonusma.data() as Map<String, dynamic>);
+      Konusma _tekKonusma =
+          Konusma.fromMap(tekKonusma.data() as Map<String, dynamic>);
       tumKonusmalar.add(_tekKonusma);
     }
     return tumKonusmalar;
@@ -135,24 +135,26 @@ class FirestoreDBService implements DBBase {
 
   @override
   Future<DateTime?> saatiGoster(String userID) async {
-    await _firebaseDB.collection("server").doc(userID).set({"saat" : FieldValue.serverTimestamp(),
+    await _firebaseDB.collection("server").doc(userID).set({
+      "saat": FieldValue.serverTimestamp(),
     }); //veriyi yazık
-    var okunanMap = await _firebaseDB.collection("server").doc(userID).get(); //okuduk
+    var okunanMap =
+        await _firebaseDB.collection("server").doc(userID).get(); //okuduk
     Timestamp okunanTarih = okunanMap.data()!["saat"];
     return okunanTarih.toDate();
   }
 
   @override
-  Future<List<MyUser>> getUserWithPagination(MyUser? enSonGetirilenUser, int getirilecekElemanSayisi) async {
+  Future<List<MyUser>> getUserWithPagination(
+      MyUser? enSonGetirilenUser, int getirilecekElemanSayisi) async {
     QuerySnapshot _querySnapshot;
-    List<MyUser> _tumKullanicilar=[];
+    List<MyUser> _tumKullanicilar = [];
     if (enSonGetirilenUser == null) {
       _querySnapshot = await FirebaseFirestore.instance
           .collection("users")
           .orderBy("userName")
           .limit(getirilecekElemanSayisi)
           .get();
-
     } else {
       _querySnapshot = await FirebaseFirestore.instance
           .collection("users")
@@ -167,5 +169,35 @@ class FirestoreDBService implements DBBase {
       _tumKullanicilar.add(_tekUser);
     }
     return _tumKullanicilar;
+  }
+
+  Future<List<Mesaj>> getMessageWithPagination(String currentUserID,
+      String sohbetEdilenUserID,Mesaj? enSonGetirilenMesaj, int getirilecekElemanSayisi) async {
+    QuerySnapshot _querySnapshot;
+    List<Mesaj> _tumMesajlar = [];
+    if (enSonGetirilenMesaj == null) {
+      _querySnapshot = await FirebaseFirestore.instance
+          .collection("konusmalar")
+          .doc(currentUserID + "--" + sohbetEdilenUserID)
+          .collection("mesajlar")
+          .orderBy("date", descending: true)
+          .limit(getirilecekElemanSayisi)
+          .get();
+    } else {
+      _querySnapshot = await FirebaseFirestore.instance
+          .collection("konusmalar")
+          .doc(currentUserID + "--" + sohbetEdilenUserID)
+          .collection("mesajlar")
+          .orderBy("date", descending: true)
+          .startAfter([enSonGetirilenMesaj.date])
+          .limit(getirilecekElemanSayisi)
+          .get();
+      await Future.delayed(Duration(seconds: 1));
+    }
+    for (DocumentSnapshot snap in _querySnapshot.docs) {
+      Mesaj _tekMesaj = Mesaj.fromMap(snap.data() as Map<String, dynamic>);
+      _tumMesajlar.add(_tekMesaj);
+    }
+    return _tumMesajlar;
   }
 }

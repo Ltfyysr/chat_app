@@ -1,5 +1,6 @@
 import 'package:chat_app/app/sohbet_page.dart';
 import 'package:chat_app/viewmodel/all_users_view_model.dart';
+import 'package:chat_app/viewmodel/chat_view_model.dart';
 import 'package:chat_app/viewmodel/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -101,11 +102,13 @@ class _KullanicilarPageState extends State<KullanicilarPage> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context, rootNavigator: true).push(
-          MaterialPageRoute(
-            builder: (context) => SohbetPage(sohbetEdilenUser: _oankiUser, currentUser: _userModel.user,),
-            ),
-          );
+        Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            create: (context) => ChatViewModel(
+                sohbetEdilenUser: _oankiUser, currentUser: _userModel.user),
+            child: SohbetPage(),
+          ),
+        ));
       },
       child: Card(
         child: ListTile(
@@ -132,7 +135,8 @@ class _KullanicilarPageState extends State<KullanicilarPage> {
   void dahaFazlaKullaniciGetir() async {
     if (_isLoading == false) {
       _isLoading = true;
-      final _tumKullanicilarViewModel = Provider.of<AllUserViewModel>(context,listen: false);
+      final _tumKullanicilarViewModel =
+          Provider.of<AllUserViewModel>(context, listen: false);
       await _tumKullanicilarViewModel.dahaFazlaUserGetir();
       _isLoading = false;
     }
@@ -140,7 +144,7 @@ class _KullanicilarPageState extends State<KullanicilarPage> {
 
   void _listeScrollListener() {
     if (_scrollController.offset >=
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       print("Listenin en altındayız");
       dahaFazlaKullaniciGetir();
